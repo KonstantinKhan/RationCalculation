@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_fragment_dishes"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <!--<View
+        android:id="@+id/fucused"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>-->
+
+    <GridLayout
+        android:id="@+id/gl_dish_info_small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#757575"
+        android:columnCount="6"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <TextView
+            style="@style/TextViewHead"
+            android:text="Вес готового" />
+
+        <EditText
+            android:id="@+id/et_dish_weight_cooked"
+            android:layout_width="32dp"
+            android:layout_height="36dp"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:inputType="number"
+            android:imeOptions="actionDone"
+            android:maxLength="4"
+            android:text="-"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/TextViewParameters"
+            android:text="ккал" />
+
+        <TextView
+            style="@style/TextViewParameters"
+            android:text="Б, г." />
+
+        <TextView
+            style="@style/TextViewParameters"
+            android:text="Ж, г." />
+
+        <TextView
+            style="@style/TextViewParameters"
+            android:text="У, г." />
+
+        <TextView
+            style="@style/TextViewHead"
+            android:layout_columnSpan="2"
+            android:text="На 100 г. сырого" />
+
+        <TextView
+            android:id="@+id/tv_dish_calories_raw"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tv_dish_proteins_raw"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tv_dish_fats_raw"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tv_dish_carbohydrates_raw"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            style="@style/TextViewHead"
+            android:layout_columnSpan="2"
+            android:text="На 100 г. готового" />
+
+        <TextView
+            android:id="@+id/tv_dish_calories_cooked"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tv_dish_proteins_cooked"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tv_dish_fats_cooked"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tv_dish_carbohydrates_cooked"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+    </GridLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_products_in_database_component"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gl_dish_info_small"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp" />
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@id/gl_dish_info_small"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:paddingTop="98dp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bnv_dish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemBackground="@color/colorBottomMenu"
+        app:itemIconTint="@color/bottom_navigation_item_colors"
+        app:itemTextColor="@color/bottom_navigation_item_colors"
+        app:labelVisibilityMode="unlabeled"
+        app:menu="@menu/bottom_menu_dish"/>
+
+</RelativeLayout>

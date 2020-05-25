@@ -1,0 +1,40 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Строчка ниже делает системную панель прозрачной -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="TextViewHead">
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:gravity">right</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextViewParameters">
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_width">36dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="EditTextValueNutrients">
+        <item name="android:layout_width">72dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLength">7</item>
+        <item name="android:gravity">right</item>
+        <item name="android:digits">1234567890,.</item>
+        <item name="android:inputType">numberDecimal</item>
+    </style>
+
+</resources>

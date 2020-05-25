@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_fragment_ration"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <GridLayout
+        android:id="@+id/gl_dish_info_small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#757575"
+        android:columnCount="5"
+        android:orientation="horizontal"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <TextView
+            style="@style/TextViewParameters"
+            android:text="Вес, г." />
+
+        <TextView
+            style="@style/TextViewParameters"
+            android:text="ккал" />
+
+        <TextView
+            style="@style/TextViewParameters"
+            android:text="Б, г." />
+
+        <TextView
+            style="@style/TextViewParameters"
+            android:text="Ж, г." />
+
+        <TextView
+            style="@style/TextViewParameters"
+            android:text="У, г." />
+
+        <TextView
+            android:id="@+id/tv_dish_weight_small"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tv_dish_calories_small"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tv_dish_proteins_small"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tv_dish_fats_small"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/tv_dish_carbohydrates_small"
+            style="@style/TextViewParameters"
+            android:text="-" />
+
+    </GridLayout>
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@id/gl_dish_info_small"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:paddingTop="98dp">
+    </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemBackground="@color/colorBottomMenu"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/black"
+        app:labelVisibilityMode="unlabeled"
+        app:menu="@menu/bottom_menu_ration" />
+
+
+</RelativeLayout>

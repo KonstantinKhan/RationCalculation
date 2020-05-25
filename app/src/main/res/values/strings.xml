@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">RationCalculation</string>
+    <string name="ration">Рацион</string>
+    <string name="dish_name">Название блюда</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="products_base">Продукты</string>
+    <string name="dishes_base">Рецепты</string>
+    <string name="duplicate">"Продукт с таким названием\n" + "уже есть в базе"</string>
+    <string name="empty_fields">"Одно или несколько полей\n" + "не заполнены"</string>
+</resources>

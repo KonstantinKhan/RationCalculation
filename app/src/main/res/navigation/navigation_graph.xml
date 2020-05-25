@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/action_ration_to_fragment_add_product"
+    app:startDestination="@id/ration">
+    <fragment
+        android:id="@+id/ration"
+        android:name="com.khan366kos.rationcalculation.Fragments.RationFragment"
+        tools:layout="@layout/fragment_ration">
+        <action
+            android:id="@+id/action_ration_to_base_products"
+            app:destination="@id/products_base" />
+    </fragment>
+    <fragment
+        android:id="@+id/products_base"
+        android:name="com.khan366kos.rationcalculation.presentation.BaseProductsFragment"
+        tools:layout="@layout/fragment_base_products" />
+    <fragment
+        android:id="@+id/dish"
+        android:name="com.khan366kos.rationcalculation.Fragments.DishFragment"
+        tools:layout="@layout/fragment_dish" >
+        <action
+            android:id="@+id/action_dish_to_base_products"
+            app:destination="@id/products_base" />
+    </fragment>
+    <fragment
+        android:id="@+id/dishes_base"
+        android:name="com.khan366kos.rationcalculation.Fragments.BaseDishesFragment"
+        tools:layout="@layout/fragment_base_dishes" />
+</navigation>

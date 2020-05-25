@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/pick_product"
+        android:icon="@drawable/ic_product"
+        android:title="Добавить продукт"/>
+    <item
+        android:id="@+id/clean_dish"
+        android:icon="@drawable/ic_clear_all_white_24dp"
+        android:title="Очистить рацион"/>
+    <item
+        android:id="@+id/pick_dish"
+        android:icon="@drawable/ic_dish"
+        android:title="Добавить блюдо"/>
+
+</menu>
