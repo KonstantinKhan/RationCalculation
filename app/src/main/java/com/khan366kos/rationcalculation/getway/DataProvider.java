@@ -122,13 +122,14 @@ public class DataProvider {
         if (cursor.moveToFirst()) {
             do {
                 product = new Product(cursor.getString(columnProductName),
-                        cursor.getInt(columnProductCalories),
+                        cursor.getDouble(columnProductCalories),
                         cursor.getDouble(columnProductProteins),
                         cursor.getDouble(columnProductFats),
                         cursor.getDouble(columnProductCarbohydrates));
                 products.add(product);
             } while (cursor.moveToNext());
         }
+
         cursor.close();
 
         /*for (int i = 0; i < 1000; i++) {

@@ -81,6 +81,7 @@ public class BaseProductsAdapter extends RecyclerView.Adapter<BaseProductsAdapte
     @Override
     public int getItemCount() {
         return items.size();
+
     }
 
     public void setItems(List<Product> products) {

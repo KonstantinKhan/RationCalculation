@@ -52,7 +52,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
         String SQL_CREATE_PRODUCTS_TABLE = "CREATE TABLE " + ProductEntry.TABLE_NAME_PRODUCTS + " ("
                 + ProductEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
                 + ProductEntry.COLUMN_PRODUCT_NAME + " TEXT NOT NULL UNIQUE, "
-                + ProductEntry.COLUMN_PRODUCT_CALORIES + " INTEGER NOT NULL, "
+                + ProductEntry.COLUMN_PRODUCT_CALORIES + " DOUBLE NOT NULL, "
                 + ProductEntry.COLUMN_PRODUCT_PROTEINS + " DOUBLE DEFAULT 0, "
                 + ProductEntry.COLUMN_PRODUCT_FATS + " DOUBLE DEFAULT 0, "
                 + ProductEntry.COLUMN_PRODUCT_CARBOHYDRATES + " DOUBLE DEFAULT 0) ;";
@@ -63,7 +63,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
         String SQL_CREATE_DISHES_TABLE = "CREATE TABLE " + ProductEntry.TABLE_DISHES + " ("
                 + ProductEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
                 + ProductEntry.COLUMN_DISH_NAME + " TEXT NOT NULL UNIQUE, "
-                + ProductEntry.COLUMN_DISH_CALORIES + " INTEGER NOT NULL, "
+                + ProductEntry.COLUMN_DISH_CALORIES + " DOUBLE NOT NULL, "
                 + ProductEntry.COLUMN_DISH_PROTEINS + " DOUBLE DEFAULT 0, "
                 + ProductEntry.COLUMN_DISH_FATS + " DOUBLE DEFAULT 0, "
                 + ProductEntry.COLUMN_DISH_CARBOHYDRATES + " DOUBLE DEFAULT 0, "

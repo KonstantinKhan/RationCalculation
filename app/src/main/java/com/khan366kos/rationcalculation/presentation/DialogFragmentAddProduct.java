@@ -180,12 +180,12 @@ public class DialogFragmentAddProduct extends DialogFragment {
         // Меняем название кнопки на соответствующее контексту операции.
         btnInsertProduct.setText("Внести изменения в базу");
         etProductName.setText(productName);
-        etProductCalories.setText(productCalories.replace(".", ""));
+        etProductCalories.setText(productCalories.replace(".", ","));
         etProductProteins.setText(productProteins.replace(".", ","));
         etProductFats.setText(productFats.replace(".", ","));
         etProductCarbohydrates.setText(productCarbohydrates.replace(".", ","));
         this.productName = productName;
-        this.productCalories = Double.parseDouble(productCalories.replace(",", ""));
+        this.productCalories = Double.parseDouble(productCalories.replace(",", "."));
         this.productProteins = Double.parseDouble(productProteins.replace(",", "."));
         this.productFats = Double.parseDouble(productFats.replace(",", "."));
         this.productCarbohydrate = Double.parseDouble(productCarbohydrates.replace(",", "."));
