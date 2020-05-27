@@ -14,11 +14,11 @@
     </fragment>
     <fragment
         android:id="@+id/products_base"
-        android:name="com.khan366kos.rationcalculation.presentation.BaseProductsFragment"
+        android:name="com.khan366kos.rationcalculation.presentation.ProductsBase.BaseProductsFragment"
         tools:layout="@layout/fragment_base_products" />
     <fragment
         android:id="@+id/dish"
-        android:name="com.khan366kos.rationcalculation.Fragments.DishFragment"
+        android:name="com.khan366kos.rationcalculation.presentation.Dish.DishFragment"
         tools:layout="@layout/fragment_dish" >
         <action
             android:id="@+id/action_dish_to_base_products"

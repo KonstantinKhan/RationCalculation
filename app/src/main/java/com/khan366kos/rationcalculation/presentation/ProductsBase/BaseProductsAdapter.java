@@ -1,6 +1,5 @@
-package com.khan366kos.rationcalculation.presentation;
+package com.khan366kos.rationcalculation.presentation.ProductsBase;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +17,6 @@ import com.khan366kos.rationcalculation.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.*;
 
 public class BaseProductsAdapter extends RecyclerView.Adapter<BaseProductsAdapter.EntryViewHolder> {
 

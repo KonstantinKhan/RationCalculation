@@ -1,8 +1,7 @@
-package com.khan366kos.rationcalculation.presentation;
+package com.khan366kos.rationcalculation.presentation.ProductsBase;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,8 +19,6 @@ import com.khan366kos.rationcalculation.MyToast;
 import com.khan366kos.rationcalculation.R;
 
 import java.util.List;
-
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 
 public class BaseProductsFragment extends Fragment implements ContractBaseProducts.ProductsView {
 
@@ -45,7 +42,6 @@ public class BaseProductsFragment extends Fragment implements ContractBaseProduc
                 new DialogFragmentAddProduct.DialogFragmentStatus() {
                     @Override
                     public void onDismissCustom() {
-                        //Log.d(TAG, "onDismissCustom");
                         if (adapter.getSwipeRevealLayout() != null) {
                             adapter.getSwipeRevealLayout().close(false);
                         }

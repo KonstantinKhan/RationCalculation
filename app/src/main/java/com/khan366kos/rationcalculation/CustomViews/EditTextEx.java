@@ -1,6 +1,7 @@
 package com.khan366kos.rationcalculation.CustomViews;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,7 +19,8 @@ public class EditTextEx extends androidx.appcompat.widget.AppCompatEditText {
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
-    // Переопределяем метод для снятия фокуса с EditText после скрытия программной клавиатуры.
+
+   /* // Переопределяем метод для снятия фокуса с EditText после скрытия программной клавиатуры.
     @Override
     public boolean onKeyPreIme(int keyCode, KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
@@ -37,5 +39,5 @@ public class EditTextEx extends androidx.appcompat.widget.AppCompatEditText {
     public void hideSoftKey() {
         this.clearFocus();
         imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
-    }
+    }*/
 }

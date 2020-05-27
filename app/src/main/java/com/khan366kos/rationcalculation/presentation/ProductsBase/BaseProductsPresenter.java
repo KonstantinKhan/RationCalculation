@@ -1,14 +1,11 @@
-package com.khan366kos.rationcalculation.presentation;
-
-import android.util.Log;
+package com.khan366kos.rationcalculation.presentation.ProductsBase;
 
 import com.khan366kos.rationcalculation.getway.DataProvider;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
-import static com.khan366kos.rationcalculation.presentation.ContractBaseProducts.*;
+import static com.khan366kos.rationcalculation.presentation.ProductsBase.ContractBaseProducts.*;
 
 public class BaseProductsPresenter implements ProductsPresenter {
 

@@ -1,10 +1,12 @@
 package com.khan366kos.rationcalculation;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         NavOptions navOptions = new NavOptions.Builder()
                 .setEnterAnim(R.anim.slide_in_right)
-                .setExitAnim(R.anim.slide_out_left)
+                //.setExitAnim(R.anim.slide_out_left)
                 .build();
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
@@ -119,11 +121,6 @@ public class MainActivity extends AppCompatActivity {
 
         menuItemAddComponent = menu.findItem(R.id.add_component);
 
-        // Слушатель наличия фокуса в searchview.
-        svProduct.setOnQueryTextFocusChangeListener((view, b) -> {
-                    if (!b) menuItemSvComponent.collapseActionView();
-                }
-        );
         return true;
     }
 
@@ -164,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Проверка фокуса");
                     if (!b) {
                         Log.d(TAG, "Нет фокуса");
-                        item.collapseActionView();
+                        //item.collapseActionView();
                         Log.d(TAG, getCurrentFocus().toString());
                     } else {
                         Log.d(TAG, "Есть фокус");
@@ -211,5 +208,34 @@ public class MainActivity extends AppCompatActivity {
         Locale locale = new Locale("ru", "RU");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", locale);
         return simpleDateFormat.format(date) + " г." + " (Сегодня) ";
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                InputMethodManager inputMethodManager =
+                        (InputMethodManager) drawerView.getContext()
+                                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(drawerView.getWindowToken(), 0);
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
     }
 }

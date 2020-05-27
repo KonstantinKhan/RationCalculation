@@ -1,13 +1,17 @@
-package com.khan366kos.rationcalculation.Adapters;
+package com.khan366kos.rationcalculation.presentation.Dish;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -22,11 +26,14 @@ import com.khan366kos.rationcalculation.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
+
 public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionComponentAdapter.SuggestionProductViewHolder> {
 
     private Dish dish; // Создаваемое блюдо
     private OnSetWeightListener onSetWeightListener;
     private List<SuggestionProductViewHolder> list = new ArrayList<>();
+    private InputMethodManager imm;
 
     public SuggestionComponentAdapter(OnSetWeightListener onSetWeightListener) {
         this.onSetWeightListener = onSetWeightListener;
@@ -72,8 +79,6 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
         void deleteProductComponent();
 
         void collapseMenuItemSvComponent();
-
-        void clearFocusEt();
     }
 
     private void makeValuesProduct(Product product, TextView productCalories,
@@ -137,7 +142,7 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
         public SuggestionProductViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            this.setIsRecyclable(false);
+            //this.setIsRecyclable(false);
 
             // Инициализируем View.
             tvProductNameComponent = itemView.findViewById(R.id.tv_search_product_name_component);
@@ -156,6 +161,7 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
 
             colorFill = etProductWeightComponent.getBackgroundTintList();
 
+
             etProductWeightComponent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
@@ -168,8 +174,9 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
             etProductWeightComponent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                    Log.d(TAG, "onEditorAction: ");
                     etProductWeightComponent.clearFocus();
-                    onSetWeightListener.clearFocusEt();
+                    //onSetWeightListener.clearFocusEt();
                     return false;
                 }
             });

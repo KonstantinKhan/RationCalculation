@@ -1,4 +1,4 @@
-package com.khan366kos.rationcalculation.presentation;
+package com.khan366kos.rationcalculation.presentation.ProductsBase;
 
 import android.content.DialogInterface;
 import android.os.Bundle;

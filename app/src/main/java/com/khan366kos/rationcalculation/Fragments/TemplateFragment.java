@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.khan366kos.rationcalculation.Adapters.SuggestionComponentAdapter;
+import com.khan366kos.rationcalculation.presentation.Dish.SuggestionComponentAdapter;
 import com.khan366kos.rationcalculation.CustomViews.EditTextEx;
 import com.khan366kos.rationcalculation.CustomViews.SearchViewEx;
 import com.khan366kos.rationcalculation.R;
@@ -117,7 +117,7 @@ public class TemplateFragment extends Fragment {
         if (edit) {
             tvHeading.setVisibility(View.GONE);
             etDishName.setVisibility(View.VISIBLE);
-            etDishName.setFocusAndToggleSoftKey();
+            //etDishName.setFocusAndToggleSoftKey();
         } else {
             tvHeading.setVisibility(View.VISIBLE);
             etDishName.setVisibility(View.GONE);

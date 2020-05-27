@@ -1,33 +1,31 @@
-package com.khan366kos.rationcalculation.Fragments;
+package com.khan366kos.rationcalculation.presentation.Dish;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.khan366kos.Objects.Product;
-import com.khan366kos.rationcalculation.Adapters.SuggestionComponentAdapter;
 import com.khan366kos.rationcalculation.Data.ProductDbHelper;
+import com.khan366kos.rationcalculation.Fragments.TemplateFragment;
 import com.khan366kos.rationcalculation.R;
 
 import java.io.ByteArrayOutputStream;
@@ -78,24 +76,14 @@ public class DishFragment extends TemplateFragment {
         // Вызываем экземляр ProductDbHelper.
         productDbHelper = ProductDbHelper.getInstance(getActivity());
 
-        // Создаем и запускаем поток.
-        // См. реализацию в ProductDbHelper.run()
-       /* Thread t = new Thread(productDbHelper);
-        t.start();
-
-        try {
-            // Ждем завершения работы нити.
-            t.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
-
-        etDishWeightCooked.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    if (((EditText) view).getText().toString().equals("-")) {
-                        ((EditText) view).setText("");
+        etDishWeightCooked.setOnFocusChangeListener((view, b) -> {
+            if (b) {
+                if (((EditText) view).getText().toString().equals("-")) {
+                    ((EditText) view).setText("");
+                }
+                if (menuItemSvComponent != null) {
+                    if (menuItemSvComponent.isActionViewExpanded()) {
+                        menuItemSvComponent.collapseActionView();
                     }
                 }
             }
@@ -148,103 +136,85 @@ public class DishFragment extends TemplateFragment {
                     menuItemSvComponent.collapseActionView();
                 }
             }
-
-            @Override
-            public void clearFocusEt() {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(etDishWeightCooked.getWindowToken(), 0);
-                etDishWeightCooked.setFocusableInTouchMode(false);
-                etDishWeightCooked.setFocusable(false);
-                etDishWeightCooked.setFocusableInTouchMode(true);
-                etDishWeightCooked.setFocusable(true);
-            }
         });
 
-        bnv.setOnNavigationItemSelectedListener(new BottomNavigationView
-                .OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.add_product_in_dish:
-                        return addProductToDish();
-                    case R.id.clean_dish:
-                        getComponentAdapter().getDish().getComposition().clear();
-                        getComponentAdapter().notifyDataSetChanged();
+        bnv.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.add_product_in_dish:
+                    return addProductToDish();
+                case R.id.clean_dish:
+                    getComponentAdapter().getDish().getComposition().clear();
+                    getComponentAdapter().notifyDataSetChanged();
+                    return true;
+
+                case R.id.save_dish:
+
+                    // Проверяем, указано ли название продукта.
+                    // Если да, то выводим сообщение и активируем поле для ввода названия блюда.
+                    if (getComponentAdapter().getDish().getName() == null) {
+                        Toast.makeText(getActivity(), "Укажите название блюда",
+                                Toast.LENGTH_SHORT).show();
+                        editDishName(true);
                         return true;
+                    }
 
-                    case R.id.save_dish:
+                    // Проверяем, есть ли в блюде добавленные продукты.
+                    // Если нет, то выводи сообщение и активируем поле для выбора продукта.
+                    else if (getComponentAdapter().getDish().getComposition().size() == 0) {
+                        Toast.makeText(getActivity(), "Выберите продукт",
+                                Toast.LENGTH_SHORT).show();
+                        addProductToDish();
+                        return true;
+                    }
 
-                        // Проверяем, указано ли название продукта.
-                        // Если да, то выводим сообщение и активируем поле для ввода названия блюда.
-                        if (getComponentAdapter().getDish().getName() == null) {
-                            Toast.makeText(getActivity(), "Укажите название блюда",
-                                    Toast.LENGTH_SHORT).show();
-                            editDishName(true);
-                            return true;
+                    // Проверяем, у всех ли продуктов указан вес.
+                    else if (getComponentAdapter().checkFillWeightProducts()) {
+                        Toast.makeText(getActivity(), "Укажите вес продуктов",
+                                Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+
+                    // Проверяем, заполнено ли поле с весом готового продукта.
+                    else if (etDishWeightCooked.getText().toString().length() == 0 ||
+                            etDishWeightCooked.getText().toString().equals("-")) {
+                        Toast.makeText(getActivity(), "Укажите вес готового блюда",
+                                Toast.LENGTH_SHORT).show();
+                        etDishWeightCooked.requestFocus();
+                        etDishWeightCooked.selectAll();
+                        return true;
+                    } else {
+                        // Сериализация блюда для хранения его в базе данных.
+                        ByteArrayOutputStream byteArrayOutputStream =
+                                new ByteArrayOutputStream();
+                        try {
+                            ObjectOutputStream outputStream =
+                                    new ObjectOutputStream(byteArrayOutputStream);
+                            outputStream.writeObject(getComponentAdapter().getDish());
+                            outputStream.close();
+
+                            // Записываем блюдо в базу данных
+                            productDbHelper.insertDish(productDbHelper.getDb(),
+                                    getComponentAdapter().getDish(), byteArrayOutputStream);
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-
-                        // Проверяем, есть ли в блюде добавленные продукты.
-                        // Если нет, то выводи сообщение и активируем поле для выбора продукта.
-                        else if (getComponentAdapter().getDish().getComposition().size() == 0) {
-                            Toast.makeText(getActivity(), "Выберите продукт",
-                                    Toast.LENGTH_SHORT).show();
-                            addProductToDish();
-                            return true;
-                        }
-
-                        // Проверяем, у всех ли продуктов указан вес.
-                        else if (getComponentAdapter().checkFillWeightProducts()) {
-                            Toast.makeText(getActivity(), "Укажите вес продуктов",
-                                    Toast.LENGTH_SHORT).show();
-                            return true;
-                        }
-
-                        // Проверяем, заполнено ли поле с весом готового продукта.
-                        else if (etDishWeightCooked.getText().toString().length() == 0 ||
-                                etDishWeightCooked.getText().toString().equals("-")) {
-                            Toast.makeText(getActivity(), "Укажите вес готового блюда",
-                                    Toast.LENGTH_SHORT).show();
-                            etDishWeightCooked.requestFocus();
-                            etDishWeightCooked.selectAll();
-                            return true;
-                        } else {
-                            // Сериализация блюда для хранения его в базе данных.
-                            ByteArrayOutputStream byteArrayOutputStream =
-                                    new ByteArrayOutputStream();
-                            try {
-                                ObjectOutputStream outputStream =
-                                        new ObjectOutputStream(byteArrayOutputStream);
-                                outputStream.writeObject(getComponentAdapter().getDish());
-                                outputStream.close();
-
-                                // Записываем блюдо в базу данных
-                                productDbHelper.insertDish(productDbHelper.getDb(),
-                                        getComponentAdapter().getDish(), byteArrayOutputStream);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            return true;
-                        }
-                }
-                return false;
+                        return true;
+                    }
             }
+            return false;
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(getComponentAdapter());
 
-        getEtDishName().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                getEtDishName().hideSoftKey();
+        getEtDishName().setOnEditorActionListener((textView, i, keyEvent) -> {
 
-                // Присваиваем значение из EditText TextView, если EditText не пустой.
-                if (getEtDishName().getText().toString().length() > 0) {
-                    getTvHeading().setText(getEtDishName().getText().toString());
-                    getComponentAdapter().getDish().setName(getTvHeading().getText().toString());
-                }
-                return true;
+            // Присваиваем значение из EditText TextView, если EditText не пустой.
+            if (getEtDishName().getText().toString().length() > 0) {
+                getTvHeading().setText(getEtDishName().getText().toString());
+                getComponentAdapter().getDish().setName(getTvHeading().getText().toString());
             }
+            return true;
         });
         super.onResume();
     }
@@ -436,9 +406,6 @@ public class DishFragment extends TemplateFragment {
         return new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (getSvComponent().isIconified()) {
-                    getMenu().findItem(R.id.mi_sv_component).collapseActionView();
-                }
                 return false;
             }
 
