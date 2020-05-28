@@ -5,25 +5,25 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 import com.khan366kos.rationcalculation.presentation.Dish.SuggestionComponentAdapter;
-import com.khan366kos.rationcalculation.CustomViews.EditTextEx;
-import com.khan366kos.rationcalculation.CustomViews.SearchViewEx;
 import com.khan366kos.rationcalculation.R;
 
 public class TemplateFragment extends Fragment {
 
     private SuggestionComponentAdapter componentAdapter;
 
-    private SearchViewEx svComponent;
+    private SearchView svComponent;
     private Menu menu;
     private TextView tvHeading;
-    private EditTextEx etDishName;
+    private EditText etDishName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,7 +83,7 @@ public class TemplateFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         this.menu = menu;
-        svComponent = (SearchViewEx) menu.findItem(R.id.mi_sv_component).getActionView();
+        svComponent = (SearchView) menu.findItem(R.id.mi_sv_component).getActionView();
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -95,7 +95,7 @@ public class TemplateFragment extends Fragment {
         return componentAdapter;
     }
 
-    public SearchViewEx getSvComponent() {
+    public SearchView getSvComponent() {
         return svComponent;
     }
 
@@ -103,7 +103,7 @@ public class TemplateFragment extends Fragment {
         return menu;
     }
 
-    public EditTextEx getEtDishName() {
+    public EditText getEtDishName() {
         return etDishName;
     }
 

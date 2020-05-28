@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -223,6 +222,19 @@ public class DishFragment extends TemplateFragment {
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menuItemSvComponent = menu.findItem(R.id.mi_sv_component);
+        svComponent = (SearchView) menuItemSvComponent.getActionView();
+        svComponent.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                svComponent.post(() -> {
+                   if (!b) {
+                       if (menuItemSvComponent.isActionViewExpanded()) {
+                           menuItemSvComponent.collapseActionView();
+                       }
+                   }
+                });
+            }
+        });
     }
 
     @Override

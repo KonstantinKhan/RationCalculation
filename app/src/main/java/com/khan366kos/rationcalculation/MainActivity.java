@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -25,7 +26,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
-import com.khan366kos.rationcalculation.CustomViews.SearchViewEx;
 import com.khan366kos.rationcalculation.Data.ProductDbHelper;
 import com.khan366kos.rationcalculation.Fragments.FragmentAddFirstProduct;
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private DrawerLayout drawerLayout;
-    private SearchViewEx svProduct;
+    private SearchView svProduct;
     private ProductDbHelper productDbHelper;
     private FragmentTransaction ft;
     private Fragment fragmentAddFirstProduct;
@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem menuItemSvComponent;
     private MenuItem menuItemAddComponent;
 
-    private int fragmentId;
+    private int newFragmentId;
+    private int oldFragmentId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
-            fragmentId = menuItem.getItemId();
+            newFragmentId = menuItem.getItemId();
             drawerLayout.closeDrawer(GravityCompat.START);
             return false;
         });
@@ -100,8 +101,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
-                if (fragmentId != 0) {
-                    navController.navigate(fragmentId, null, navOptions);
+                if (newFragmentId != 0) {
+                    if (newFragmentId != oldFragmentId) {
+                        Log.d(TAG, "onDrawerClosed: " + newFragmentId + " " + oldFragmentId);
+                        navController.navigate(newFragmentId, null, navOptions);
+                        oldFragmentId = newFragmentId;
+                    }
                 }
             }
 
@@ -117,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.tollbar_menu_ration, menu);
 
         menuItemSvComponent = menu.findItem(R.id.mi_sv_component);
-        svProduct = (SearchViewEx) menuItemSvComponent.getActionView();
+        svProduct = (SearchView) menuItemSvComponent.getActionView();
 
         menuItemAddComponent = menu.findItem(R.id.add_component);
 
@@ -133,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        switch (fragmentId) {
+        switch (newFragmentId) {
             case R.id.products_base:
                 tvHeading.setText(R.string.products_base);
                 menuItemAddComponent.setVisible(true);

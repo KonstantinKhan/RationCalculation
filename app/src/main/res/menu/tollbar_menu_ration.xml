@@ -6,8 +6,8 @@
         android:id="@+id/mi_sv_component"
         android:icon="@drawable/ic_search_black_24dp"
         android:title="search"
-        app:actionViewClass="com.khan366kos.rationcalculation.CustomViews.SearchViewEx"
         android:visible="false"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
