@@ -4,14 +4,13 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.khan366kos.Objects.Product;
+import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Data.ProductDbHelper;
 import com.khan366kos.rationcalculation.ProductContract;
 import com.khan366kos.rationcalculation.RationCalculationApp;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observer;
 
 import javax.inject.Inject;
 
@@ -62,6 +61,10 @@ public class DataProvider {
         return Observable.fromCallable(() -> callUpdateProduct(productName, productCalories,
                 productProteins, productFats, productCarbohydrates)
         );
+    }
+
+    public Observable<List<Product>> getCursor(String string, List<Product> items) {
+        return Observable.fromCallable(() -> callQueryProduct(string, items));
     }
 
     private void callAddProduct(String productName, String productCalories, String productProteins,
@@ -156,5 +159,71 @@ public class DataProvider {
                 new String[]{String.valueOf(columnProductId)});
 
         return callGetProduct(productName);
+    }
+
+    private List<Product> callQueryProduct(String s, List<Product> items) {
+        productDbHelper.setDb();
+
+        List<Product> queryProduct = new ArrayList<>();
+        Product product;
+
+        Cursor cursor = productDbHelper.getDb().query(TABLE_NAME_PRODUCTS,
+                null,
+                where(s, items).toString(),
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        int columnProductName = cursor.getColumnIndex(COLUMN_PRODUCT_NAME);
+        int columnProductCalories = cursor.getColumnIndex(COLUMN_PRODUCT_CALORIES);
+        int columnProductProteins = cursor.getColumnIndex(COLUMN_PRODUCT_PROTEINS);
+        int columnProductFats = cursor.getColumnIndex(COLUMN_PRODUCT_FATS);
+        int columnProductCarbohydrates = cursor.getColumnIndex(COLUMN_PRODUCT_CARBOHYDRATES);
+
+        if (cursor.moveToFirst()) {
+            do {
+                product = new Product(cursor.getString(columnProductName),
+                        cursor.getDouble(columnProductCalories),
+                        cursor.getDouble(columnProductProteins),
+                        cursor.getDouble(columnProductFats),
+                        cursor.getDouble(columnProductCarbohydrates));
+                queryProduct.add(product);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return queryProduct;
+    }
+
+    // Метод для получения значений продуктов, которые уже использованы в блюде в виде строки,
+    // которая передается в SQL-запрос.
+    private StringBuilder where(String string, List<Product> items) {
+        String selection = "";
+        StringBuilder values = new StringBuilder();
+        if (items.size() > 0) {
+            selection = COLUMN_PRODUCT_NAME + " NOT LIKE ";
+            for (int i = 0; i < items.size(); i++) {
+                if (i == 0) {
+                    values.append("'" + items.get(i).getName() + "'");
+                } else {
+                    values.append(" AND " + selection + "'" + items.get(i).getName() + "'");
+                }
+            }
+        }
+
+        StringBuilder val = new StringBuilder();
+        if (items.size() > 0) {
+            if (string.length() > 0) {
+                val.append(" AND " + COLUMN_PRODUCT_NAME + " LIKE '%" + string + "%'");
+            }
+        } else {
+            if (string.length() > 0) {
+                val.append(COLUMN_PRODUCT_NAME + " LIKE '%" + string + "%'");
+            }
+        }
+        return new StringBuilder(selection).append(values).append(val);
     }
 }

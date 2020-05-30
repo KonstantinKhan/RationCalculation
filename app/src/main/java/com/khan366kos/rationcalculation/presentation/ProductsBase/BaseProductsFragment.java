@@ -14,15 +14,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.khan366kos.Objects.Product;
+import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.MyToast;
 import com.khan366kos.rationcalculation.R;
 
 import java.util.List;
 
-public class BaseProductsFragment extends Fragment implements ContractBaseProducts.ProductsView {
+import static com.khan366kos.rationcalculation.presentation.ProductsBase.ContractBaseProducts.*;
 
-    private ContractBaseProducts.ProductsPresenter presenter;
+public class BaseProductsFragment extends Fragment implements ProductsView {
+
+    private ProductsPresenter presenter;
 
     private RecyclerView recyclerView;
     private BaseProductsAdapter adapter;
@@ -35,6 +37,7 @@ public class BaseProductsFragment extends Fragment implements ContractBaseProduc
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        setHasOptionsMenu(true);
 
         fm = getParentFragmentManager();
 
@@ -86,12 +89,6 @@ public class BaseProductsFragment extends Fragment implements ContractBaseProduc
                 df.show(fm, "dialog add product");
             }
         });
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        super.onCreate(savedInstanceState);
     }
 
     @Nullable

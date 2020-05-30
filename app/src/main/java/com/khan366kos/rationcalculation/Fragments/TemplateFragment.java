@@ -13,12 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
-import com.khan366kos.rationcalculation.presentation.Dish.SuggestionComponentAdapter;
+import com.khan366kos.rationcalculation.presentation.Dish.DishAdapter;
 import com.khan366kos.rationcalculation.R;
 
 public class TemplateFragment extends Fragment {
 
-    private SuggestionComponentAdapter componentAdapter;
+    private DishAdapter componentAdapter;
 
     private SearchView svComponent;
     private Menu menu;
@@ -87,11 +87,11 @@ public class TemplateFragment extends Fragment {
         super.onPrepareOptionsMenu(menu);
     }
 
-    public void setComponentAdapter(SuggestionComponentAdapter.OnSetWeightListener onSetWeightListener) {
-        this.componentAdapter = new SuggestionComponentAdapter(onSetWeightListener);
+    public void setComponentAdapter(DishAdapter.OnMove onMove) {
+        this.componentAdapter = new DishAdapter(onMove);
     }
 
-    public SuggestionComponentAdapter getComponentAdapter() {
+    public DishAdapter getComponentAdapter() {
         return componentAdapter;
     }
 

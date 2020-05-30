@@ -1,6 +1,5 @@
 package com.khan366kos.rationcalculation.presentation.Dish;
 
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.Editable;
@@ -8,10 +7,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -19,8 +16,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.khan366kos.Objects.Dish;
-import com.khan366kos.Objects.Product;
+import com.chauthai.swipereveallayout.SwipeRevealLayout;
+import com.chauthai.swipereveallayout.ViewBinderHelper;
+import com.khan366kos.rationcalculation.Model.Dish;
+import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.R;
 
 import java.util.ArrayList;
@@ -28,26 +27,24 @@ import java.util.List;
 
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 
-public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionComponentAdapter.SuggestionProductViewHolder> {
+public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProductViewHolder> {
 
     private Dish dish; // Создаваемое блюдо
-    private OnSetWeightListener onSetWeightListener;
+    private OnMove onMove; // Интерфейс для передачи событий в DishFragment;
     private List<SuggestionProductViewHolder> list = new ArrayList<>();
-    private InputMethodManager imm;
+    private ViewBinderHelper viewBinderHelper;
 
-    public SuggestionComponentAdapter(OnSetWeightListener onSetWeightListener) {
-        this.onSetWeightListener = onSetWeightListener;
+    public DishAdapter(OnMove onMove) {
+        this.onMove = onMove;
         dish = new Dish();
+        viewBinderHelper = new ViewBinderHelper();
     }
 
     @NonNull
     @Override
     public SuggestionProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        // Создаем view для отображения данных о продукте, входящем в блюдо.
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_item_product_component, parent, false);
-
         return new SuggestionProductViewHolder(view);
     }
 
@@ -59,6 +56,7 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
         holder.product = dish.getComposition().get(position);
 
         holder.tvProductNameComponent.setText(holder.product.getName());
+
         makeValuesProduct(holder.product, holder.tvProductCaloriesComponent,
                 holder.tvProductProteinsComponent, holder.tvProductFatsComponent,
                 holder.tvProductCarbohydratesComponent);
@@ -66,14 +64,14 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
 
     @Override
     public int getItemCount() {
-        return dish.getComposition().size();
+        return dish.getProductCount();
     }
 
     public Dish getDish() {
         return dish;
     }
 
-    public interface OnSetWeightListener {
+    public interface OnMove {
         void makeValues();
 
         void deleteProductComponent();
@@ -102,7 +100,7 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
         ColorStateList colorNonFill = ColorStateList.valueOf(Color.RED);
 
         // Проверяем поле для значений веса продукта на заполненность.
-        // При первом встрече незаполненного поля прерываем цикл, присваем флагу checkFill false.
+        // При первой встрече незаполненного поля прерываем цикл, присваем флагу checkFill false.
         for (SuggestionProductViewHolder holder : list) {
             if (holder.etProductWeightComponent.getText().toString().length() == 0) {
                 checkFill = true;
@@ -139,10 +137,10 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
 
         private Product product;
 
+        private SwipeRevealLayout srl;
+
         public SuggestionProductViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            //this.setIsRecyclable(false);
 
             // Инициализируем View.
             tvProductNameComponent = itemView.findViewById(R.id.tv_search_product_name_component);
@@ -158,27 +156,19 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
                     itemView.findViewById(R.id.et_search_weight_product_component);
             btnDeleteProductComponent =
                     itemView.findViewById(R.id.btn_delete_product_component);
+            srl = itemView.findViewById(R.id.srl_item_component);
 
             colorFill = etProductWeightComponent.getBackgroundTintList();
 
-
-            etProductWeightComponent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean b) {
-                    if (b) {
-                        onSetWeightListener.collapseMenuItemSvComponent();
-                    }
+            etProductWeightComponent.setOnFocusChangeListener((view, b) -> {
+                if (b) {
+                    onMove.collapseMenuItemSvComponent();
                 }
             });
 
-            etProductWeightComponent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                    Log.d(TAG, "onEditorAction: ");
-                    etProductWeightComponent.clearFocus();
-                    //onSetWeightListener.clearFocusEt();
-                    return false;
-                }
+            etProductWeightComponent.setOnEditorActionListener((textView, i, keyEvent) -> {
+                etProductWeightComponent.clearFocus();
+                return false;
             });
 
             // При внесении данных о весе продукта пересчитываем его параметры, а также параметры блюда.
@@ -226,7 +216,7 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
                     dish.getComposition().set(getAdapterPosition(), product);
                     dish.setNutrients();
 
-                    onSetWeightListener.makeValues();
+                    onMove.makeValues();
                 }
 
                 @Override
@@ -236,14 +226,13 @@ public class SuggestionComponentAdapter extends RecyclerView.Adapter<SuggestionC
             });
 
             // Удаление продукта из состава блюда
-            btnDeleteProductComponent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dish.getComposition().remove(product);
-                    dish.setNutrients();
-                    notifyItemRemoved(getAdapterPosition());
-                    onSetWeightListener.deleteProductComponent();
-                }
+            btnDeleteProductComponent.setOnClickListener(view -> {
+                etProductWeightComponent.setText("");
+                srl.close(false);
+                dish.getComposition().remove(product);
+                dish.setNutrients();
+                notifyItemRemoved(getAdapterPosition());
+                onMove.deleteProductComponent();
             });
         }
     }

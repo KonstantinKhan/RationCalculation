@@ -10,7 +10,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.khan366kos.Objects.Dish;
+import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.ProductContract.ProductEntry;
 
 import java.io.ByteArrayOutputStream;

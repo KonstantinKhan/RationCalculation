@@ -1,9 +1,12 @@
 package com.khan366kos.rationcalculation.presentation.Dish;
 
+import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,12 +20,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.appcompat.widget.SearchView;
+import androidx.cursoradapter.widget.CursorAdapter;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.khan366kos.Objects.Product;
+import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Data.ProductDbHelper;
 import com.khan366kos.rationcalculation.Fragments.TemplateFragment;
 import com.khan366kos.rationcalculation.R;
@@ -30,13 +35,15 @@ import com.khan366kos.rationcalculation.R;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.*;
 
-public class DishFragment extends TemplateFragment {
+public class DishFragment extends Fragment implements ContractDishFragment.DishView {
 
     private RecyclerView recyclerView;
-    private ProductDbHelper productDbHelper;
+    private Menu menu;
     private SearchView svComponent;
 
     private TextView tvDishCaloriesRaw;
@@ -54,45 +61,40 @@ public class DishFragment extends TemplateFragment {
 
     private MenuItem menuItemSvComponent;
 
+
+    private DishPresenter presenter;
+    private DishAdapter dishAdapter;
+
+    private MatrixCursor cursor;
+    private SimpleCursorAdapter simpleCursorAdapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_dish, container, false);
-        recyclerView = view.findViewById(R.id.rv_products_in_database_component);
-        recyclerView.setItemAnimator(null); // убираем анимацию элементов при изменениях.
         init(view);
-
-        bnv = view.findViewById(R.id.bnv_dish);
-
         return view;
     }
 
     @Override
-    public void onResume() {
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        // Вызываем экземляр ProductDbHelper.
-        productDbHelper = ProductDbHelper.getInstance(getActivity());
+        setHasOptionsMenu(true); // Позволяем фрагменту работать с меню.
 
-        etDishWeightCooked.setOnFocusChangeListener((view, b) -> {
-            if (b) {
-                if (((EditText) view).getText().toString().equals("-")) {
-                    ((EditText) view).setText("");
-                }
-                if (menuItemSvComponent != null) {
-                    if (menuItemSvComponent.isActionViewExpanded()) {
-                        menuItemSvComponent.collapseActionView();
-                    }
-                }
-            }
-        });
+        setSimpleCursorAdapter(); // Получаем экземпляр SimpleCursorAdapter.
 
-        // Создаем адаптер для обработки запросов в svComponent.
-        setComponentAdapter(new SuggestionComponentAdapter.OnSetWeightListener() {
+        presenter = new DishPresenter(this); // Получаем экземпляр DishPresenter.
+
+        dishAdapter = new DishAdapter(new DishAdapter.OnMove() {
+
             @Override
             public void makeValues() {
-                setValuesRaw();
+
+                if (dishAdapter.getDish().getWeight() != 0) {
+                    setValuesRaw();
+                }
                 try {
                     setValuesCooked();
                 } catch (NumberFormatException e) {
@@ -108,11 +110,7 @@ public class DishFragment extends TemplateFragment {
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        if (charSequence.toString().length() > 0) {
-                            getComponentAdapter().getDish().setWeightCooked(Integer.parseInt(
-                                    charSequence.toString()));
-                            setValuesCooked();
-                        }
+                        setValuesCooked();
                     }
 
                     @Override
@@ -124,8 +122,11 @@ public class DishFragment extends TemplateFragment {
 
             @Override
             public void deleteProductComponent() {
-                setValuesRaw();
-                setValuesCooked();
+                if (!etDishWeightCooked.getText().toString().equals("-") &&
+                        dishAdapter.getDish().getWeight() != 0) {
+                    setValuesRaw();
+                    setValuesCooked();
+                }
             }
 
             @Override
@@ -136,52 +137,80 @@ public class DishFragment extends TemplateFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(dishAdapter);
+
+        etDishWeightCooked.setOnFocusChangeListener((view, b) -> {
+
+            // Выполняем действия при наведении фокуса на EditText,
+            // отвечающего за значение веса готового блюда.
+            if (b) {
+
+                // Заменяем значение "-" на "".
+                if (((EditText) view).getText().toString().equals("-")) {
+                    ((EditText) view).setText("");
+                }
+
+                // Закрываем SearchView.
+                if (menuItemSvComponent != null) {
+                    if (menuItemSvComponent.isActionViewExpanded()) {
+                        menuItemSvComponent.collapseActionView();
+                    }
+                }
+            }
+        });
 
         bnv.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.add_product_in_dish:
-                    return addProductToDish();
+                    menu.findItem(R.id.mi_sv_component).expandActionView();
+                    return true;
                 case R.id.clean_dish:
-                    getComponentAdapter().getDish().getComposition().clear();
-                    getComponentAdapter().notifyDataSetChanged();
+                    //getComponentAdapter().getDish().getComposition().clear();
+                    //getComponentAdapter().notifyDataSetChanged();
                     return true;
 
                 case R.id.save_dish:
 
                     // Проверяем, указано ли название продукта.
                     // Если да, то выводим сообщение и активируем поле для ввода названия блюда.
-                    if (getComponentAdapter().getDish().getName() == null) {
+                    /*if (getComponentAdapter().getDish().getName() == null) {
                         Toast.makeText(getActivity(), "Укажите название блюда",
                                 Toast.LENGTH_SHORT).show();
                         editDishName(true);
                         return true;
-                    }
+                    }*/
 
                     // Проверяем, есть ли в блюде добавленные продукты.
                     // Если нет, то выводи сообщение и активируем поле для выбора продукта.
-                    else if (getComponentAdapter().getDish().getComposition().size() == 0) {
+                   /* else if (getComponentAdapter().getDish().getComposition().size() == 0) {
                         Toast.makeText(getActivity(), "Выберите продукт",
                                 Toast.LENGTH_SHORT).show();
                         addProductToDish();
                         return true;
-                    }
+                    }*/
 
                     // Проверяем, у всех ли продуктов указан вес.
-                    else if (getComponentAdapter().checkFillWeightProducts()) {
+                    /*else if (getComponentAdapter().checkFillWeightProducts()) {
                         Toast.makeText(getActivity(), "Укажите вес продуктов",
                                 Toast.LENGTH_SHORT).show();
                         return true;
-                    }
+                    }*/
 
                     // Проверяем, заполнено ли поле с весом готового продукта.
-                    else if (etDishWeightCooked.getText().toString().length() == 0 ||
+                    /*else if (etDishWeightCooked.getText().toString().length() == 0 ||
                             etDishWeightCooked.getText().toString().equals("-")) {
                         Toast.makeText(getActivity(), "Укажите вес готового блюда",
                                 Toast.LENGTH_SHORT).show();
                         etDishWeightCooked.requestFocus();
                         etDishWeightCooked.selectAll();
-                        return true;
-                    } else {
+                        return true;*/
+                   /* } else {
                         // Сериализация блюда для хранения его в базе данных.
                         ByteArrayOutputStream byteArrayOutputStream =
                                 new ByteArrayOutputStream();
@@ -198,15 +227,12 @@ public class DishFragment extends TemplateFragment {
                             e.printStackTrace();
                         }
                         return true;
-                    }
+                    }*/
             }
             return false;
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(getComponentAdapter());
-
-        getEtDishName().setOnEditorActionListener((textView, i, keyEvent) -> {
+        /*getEtDishName().setOnEditorActionListener((textView, i, keyEvent) -> {
 
             // Присваиваем значение из EditText TextView, если EditText не пустой.
             if (getEtDishName().getText().toString().length() > 0) {
@@ -214,67 +240,173 @@ public class DishFragment extends TemplateFragment {
                 getComponentAdapter().getDish().setName(getTvHeading().getText().toString());
             }
             return true;
-        });
+        });*/
         super.onResume();
     }
 
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
+
+        this.menu = menu;
+
         menuItemSvComponent = menu.findItem(R.id.mi_sv_component);
         svComponent = (SearchView) menuItemSvComponent.getActionView();
-        svComponent.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+
+        // Устанавливаем вспомогательную надпись в поле поиска.
+        svComponent.setQueryHint("Выберите продукт");
+
+        svComponent.setSuggestionsAdapter(simpleCursorAdapter);
+
+        // Устанавливаем максимальную ширину поля отображения вариантов поиска.
+        svComponent.setMaxWidth(Integer.MAX_VALUE);
+
+        svComponent.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                svComponent.post(() -> {
-                   if (!b) {
-                       if (menuItemSvComponent.isActionViewExpanded()) {
-                           menuItemSvComponent.collapseActionView();
-                       }
-                   }
-                });
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                svComponent.post(() -> presenter.onQueryTextChange(s,
+                        dishAdapter.getDish().getComposition()));
+                return false;
             }
         });
+
+        svComponent.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+
+                int i = dishAdapter.getItemCount(); // Количество продуктов в блюде.
+
+                // Создаем курсор в выпадающем меню.
+                Cursor cursor = svComponent.getSuggestionsAdapter().getCursor();
+                cursor.moveToPosition(position);
+
+                // Новый продукт с данными, выбранными из поиска.
+                Product product = new Product(cursor.getString(1),
+                        cursor.getDouble(2),
+                        cursor.getDouble(3),
+                        cursor.getDouble(4),
+                        cursor.getDouble(5));
+
+                // Добавляем продукт в блюдо
+                dishAdapter.getDish().getComposition().add(product);
+
+                // Прокручивает RecyclerView до добавленного блюда.
+                recyclerView.smoothScrollToPosition(dishAdapter
+                        .getDish().getComposition().size() - 1);
+
+                // Обнуляем строку запроса.
+                svComponent.setQuery("", false);
+                dishAdapter.notifyItemInserted(i);
+
+                return true;
+            }
+        });
+
+        // Закрываем SearchView, если у него пропадает фокус.
+        svComponent.setOnQueryTextFocusChangeListener((view, b) ->
+                svComponent.post(() -> {
+                    if (!b) {
+                        if (menuItemSvComponent.isActionViewExpanded()) {
+                            menuItemSvComponent.collapseActionView();
+                        }
+                    }
+                }));
+    }
+
+    // Метод для инициализации View.
+    private void init(View view) {
+
+        // Блок View, отражающих параметры сырого блюда.
+        tvDishCaloriesRaw = view.findViewById(R.id.tv_dish_calories_raw);
+        tvDishProteinsRaw = view.findViewById(R.id.tv_dish_proteins_raw);
+        tvDishFatsRaw = view.findViewById(R.id.tv_dish_fats_raw);
+        tvDishCarbohydratesRaw = view.findViewById(R.id.tv_dish_carbohydrates_raw);
+
+        // Блок View, отражающих параметры готового блюда.
+        etDishWeightCooked = view.findViewById(R.id.et_dish_weight_cooked);
+        tvDishCaloriesCooked = view.findViewById(R.id.tv_dish_calories_cooked);
+        tvDishProteinsCooked = view.findViewById(R.id.tv_dish_proteins_cooked);
+        tvDishFatsCooked = view.findViewById(R.id.tv_dish_fats_cooked);
+        tvDishCarbohydratesCooked = view.findViewById(R.id.tv_dish_carbohydrates_cooked);
+
+        bnv = view.findViewById(R.id.bnv_dish);
+
+        recyclerView = view.findViewById(R.id.rv_products_in_database_component);
+        recyclerView.setItemAnimator(null); // убираем анимацию элементов при изменениях.
+    }
+
+    // Устанавливаем зачения параметров блюда на 100 г. в готовом виде.
+    private void setValuesCooked() {
+        if (etDishWeightCooked.getText().toString().length() != 0 &&
+                !etDishWeightCooked.getText().toString().equals("-")) {
+            dishAdapter.getDish().setWeightCooked(Integer.parseInt(
+                    etDishWeightCooked.getText().toString()));
+            dishAdapter.getDish().setNutrientsCookedStr();
+            dishAdapter.getDish().setNutrientsCooked();
+            tvDishCaloriesCooked.setText(dishAdapter.getDish().getCaloriesCookedStr());
+            tvDishProteinsCooked.setText(dishAdapter.getDish().getProteinsCookedStr());
+            tvDishFatsCooked.setText(dishAdapter.getDish().getFatsCookedStr());
+            tvDishCarbohydratesCooked.setText(dishAdapter.getDish().getCarbohydratesCookedStr());
+        } else if (etDishWeightCooked.getText().toString().length() == 0) {
+            tvDishCaloriesCooked.setText("-");
+            tvDishProteinsCooked.setText("-");
+            tvDishFatsCooked.setText("-");
+            tvDishCarbohydratesCooked.setText("-");
+        }
+
+    }
+
+    // Устанавливаем зачения параметров блюда на 100 г. в сыром виде.
+    private void setValuesRaw() {
+        tvDishCaloriesRaw.setText(dishAdapter.getDish().getCaloriesDefaultStr());
+        tvDishProteinsRaw.setText(dishAdapter.getDish().getProteinsDefaultStr());
+        tvDishFatsRaw.setText(dishAdapter.getDish().getFatsDefaultStr());
+        tvDishCarbohydratesRaw.setText(dishAdapter.getDish().getCarbohydratesDefaultStr());
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public void notifyCursorAdapter(List<Product> products) {
 
-        if (item.getItemId() == R.id.mi_sv_component) {
-            getSvComponent().setMaxWidth(Integer.MAX_VALUE);
-            getSvComponent().setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String s) {
-                    return false;
-                }
+        setCursor();
+        String[] temp = new String[6];
 
-                @Override
-                public boolean onQueryTextChange(String s) {
-                    getSvComponent().setSuggestionsAdapter(getCursorAdapter(s));
-                    return false;
-                }
-            });
-
-            // Слушатель для ослеживания событий, связанных с предложениями.
-            getSvComponent().setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-                @Override
-                public boolean onSuggestionSelect(int position) {
-                    return true;
-                }
-
-                @Override
-                public boolean onSuggestionClick(int position) {
-                    return onClickHandlerSuggestions(position);
-                }
-            });
+        // Заполняем курсор данными из полученного списка продуктов.
+        for (int i = 0; i < products.size(); i++) {
+            temp[0] = String.valueOf(i);
+            temp[1] = products.get(i).getName();
+            temp[2] = String.valueOf(products.get(i).getCaloriesDefault());
+            temp[3] = String.valueOf(products.get(i).getProteinsDefault());
+            temp[4] = String.valueOf(products.get(i).getFatsDefault());
+            temp[5] = String.valueOf(products.get(i).getCarbohydratesDefault());
+            cursor.addRow(temp);
         }
-        return super.onOptionsItemSelected(item);
+
+        // Обновляем курсор.
+        simpleCursorAdapter.changeCursor(cursor);
     }
 
-    private SimpleCursorAdapter getCursorAdapter(String string) {
-        return new SimpleCursorAdapter(getActivity(),
+    // Метод для получения курсора.
+    private void setCursor() {
+        String[] columnName = {_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_CALORIES,
+                COLUMN_PRODUCT_PROTEINS, COLUMN_PRODUCT_FATS, COLUMN_PRODUCT_CARBOHYDRATES};
+        cursor = new MatrixCursor(columnName);
+    }
+
+    // Метод для получения экземпляра SimpleCursorAdapter.
+    public void setSimpleCursorAdapter() {
+        simpleCursorAdapter = new SimpleCursorAdapter(getContext(),
                 R.layout.fragment_suggestions,
-                cursor(where(string).toString()),
+                null,
                 new String[]{COLUMN_PRODUCT_NAME,
                         COLUMN_PRODUCT_CALORIES,
                         COLUMN_PRODUCT_PROTEINS,
@@ -286,167 +418,5 @@ public class DishFragment extends TemplateFragment {
                         R.id.tv_suggestion_product_fats,
                         R.id.tv_suggestion_product_carbohydrates},
                 0);
-    }
-
-    // Метод для получения курсора с учетом использованных продуктов.
-    private Cursor cursor(String selection) {
-        return productDbHelper.getDb().query(TABLE_NAME_PRODUCTS,
-                null,
-                selection,
-                null,
-                null,
-                null,
-                null,
-                null);
-    }
-
-    // Метод для получения значений продуктов, которые уже использованы в блюде в виде строки,
-    // которая передается в SQL-запрос.
-    private StringBuilder where(String string) {
-        String selection = "";
-        StringBuilder values = new StringBuilder();
-        if (getComponentAdapter().getDish().getComposition().size() > 0) {
-            selection = COLUMN_PRODUCT_NAME + " NOT LIKE ";
-            for (int i = 0; i < getComponentAdapter().getDish().getComposition().size(); i++) {
-                if (i == 0) {
-                    values.append("'" + getComponentAdapter().getDish().getComposition().get(i).getName() + "'");
-                } else {
-                    values.append(" AND " + selection + "'" + getComponentAdapter().getDish().getComposition().get(i).getName() + "'");
-                }
-            }
-        }
-
-        StringBuilder val = new StringBuilder();
-        if (getComponentAdapter().getDish().getComposition().size() > 0) {
-            if (string.length() > 0) {
-                val.append(" AND " + COLUMN_PRODUCT_NAME + " LIKE '%" + string + "%'");
-            }
-        } else {
-            if (string.length() > 0) {
-                val.append(COLUMN_PRODUCT_NAME + " LIKE '%" + string + "%'");
-            }
-        }
-        return new StringBuilder(selection).append(values).append(val);
-    }
-
-    // Метод для инициализации View.
-    private void init(View view) {
-
-        tvDishCaloriesRaw = view.findViewById(R.id.tv_dish_calories_raw);
-        tvDishProteinsRaw = view.findViewById(R.id.tv_dish_proteins_raw);
-        tvDishFatsRaw = view.findViewById(R.id.tv_dish_fats_raw);
-        tvDishCarbohydratesRaw = view.findViewById(R.id.tv_dish_carbohydrates_raw);
-
-        etDishWeightCooked = view.findViewById(R.id.et_dish_weight_cooked);
-        tvDishCaloriesCooked = view.findViewById(R.id.tv_dish_calories_cooked);
-        tvDishProteinsCooked = view.findViewById(R.id.tv_dish_proteins_cooked);
-        tvDishFatsCooked = view.findViewById(R.id.tv_dish_fats_cooked);
-        tvDishCarbohydratesCooked = view.findViewById(R.id.tv_dish_carbohydrates_cooked);
-    }
-
-    // Устанавливаем зачения параметров блюда (калорийность, количество белков, жиров
-    // и углеводов на 100 г. в готовом виде.
-    private void setValuesCooked() {
-        getComponentAdapter().getDish().setNutrientsCookedStr();
-        getComponentAdapter().getDish().setNutrientsCooked();
-        tvDishCaloriesCooked.setText(getComponentAdapter().getDish().getCaloriesCookedStr());
-        tvDishProteinsCooked.setText(getComponentAdapter().getDish().getProteinsCookedStr());
-        tvDishFatsCooked.setText(getComponentAdapter().getDish().getFatsCookedStr());
-        tvDishCarbohydratesCooked.setText(getComponentAdapter().getDish().getCarbohydratesCookedStr());
-    }
-
-    // Устанавливаем зачения параметров блюда (калорийность, количество белков, жиров
-    // и углеводов на 100 г. в сыром виде.
-    private void setValuesRaw() {
-        tvDishCaloriesRaw.setText(getComponentAdapter().getDish().getCaloriesDefaultStr());
-        tvDishProteinsRaw.setText(getComponentAdapter().getDish().getProteinsDefaultStr());
-        tvDishFatsRaw.setText(getComponentAdapter().getDish().getFatsDefaultStr());
-        tvDishCarbohydratesRaw.setText(getComponentAdapter().getDish().getCarbohydratesDefaultStr());
-    }
-
-    // Метод для обработки нажания на предложении.
-    private boolean onClickHandlerSuggestions(int position) {
-
-        int i = getComponentAdapter().getItemCount(); // Количество продуктов в блюде.
-
-        // Создаем курсор в выпадающем меню.
-        Cursor cursor = getSvComponent().getSuggestionsAdapter().getCursor();
-        cursor.moveToPosition(position);
-
-        // Новый продукт с данными, выбранными из поиска.
-        Product product = new Product(cursor.getString(1),
-                cursor.getInt(2),
-                cursor.getDouble(3),
-                cursor.getDouble(4),
-                cursor.getDouble(5));
-
-        // Добавляем продукт в блюдо
-        getComponentAdapter().getDish().getComposition().add(product);
-
-        // Обнуляем параметры SQL-запроса в адаптере.
-        getSvComponent().setSuggestionsAdapter(getCursorAdapter(""));
-
-        // Прокручивает RecyclerView до добавленного блюда.
-        recyclerView.smoothScrollToPosition(getComponentAdapter()
-                .getDish().getComposition().size() - 1);
-        cursor.close();
-
-        // Обнуляем строку запроса.
-        getSvComponent().setQuery("", false);
-        getComponentAdapter().notifyItemInserted(i);
-
-        return true;
-    }
-
-    // Обратный вызов для обработки взаимодействия с предложениями.
-    private SearchView.OnSuggestionListener suggestionHandler() {
-        return new SearchView.OnSuggestionListener() {
-            @Override
-            public boolean onSuggestionSelect(int position) {
-                return false;
-            }
-
-            @Override
-            public boolean onSuggestionClick(int position) {
-                return onClickHandlerSuggestions(position);
-            }
-        };
-    }
-
-    // Обратный вызов для обработки ввода запросов в SearchView
-    private SearchView.OnQueryTextListener searchProduct() {
-        return new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                getSvComponent().setSuggestionsAdapter(getCursorAdapter(newText));
-                return false;
-            }
-        };
-    }
-
-    // Метода для вызова события добавления продукта в блюдо
-    private boolean addProductToDish() {
-
-        // Активируем ItemMenu, отвечающий за поиск продуктов.
-        getMenu().findItem(R.id.mi_sv_component).expandActionView();
-
-        // Устанавливаем вспомогательную надпись в поле поиска.
-        getSvComponent().setQueryHint("Выберите продукт");
-
-        // Устанавливаем максимальную ширину поля отображения вариантов поиска.
-        getSvComponent().setMaxWidth(Integer.MAX_VALUE);
-
-        // Слушатель для отслеживания ввода в SearchView.
-        getSvComponent().setOnQueryTextListener(searchProduct());
-
-        // Слушатель для ослеживания событий, связанных с предложениями.
-        getSvComponent().setOnSuggestionListener(suggestionHandler());
-
-        return true;
     }
 }

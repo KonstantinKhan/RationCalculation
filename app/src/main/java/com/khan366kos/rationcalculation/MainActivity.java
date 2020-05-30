@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private DrawerLayout drawerLayout;
     private SearchView svProduct;
-    private ProductDbHelper productDbHelper;
     private FragmentTransaction ft;
     private Fragment fragmentAddFirstProduct;
     private NavController navController;
@@ -103,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             public void onDrawerClosed(@NonNull View drawerView) {
                 if (newFragmentId != 0) {
                     if (newFragmentId != oldFragmentId) {
-                        Log.d(TAG, "onDrawerClosed: " + newFragmentId + " " + oldFragmentId);
                         navController.navigate(newFragmentId, null, navOptions);
                         oldFragmentId = newFragmentId;
                     }
@@ -155,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(@NonNull final MenuItem item) {
         if (item.getItemId() == R.id.mi_sv_component) {
 
@@ -193,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     public boolean onSupportNavigateUp() {

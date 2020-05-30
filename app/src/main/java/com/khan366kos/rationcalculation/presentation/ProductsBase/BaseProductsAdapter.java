@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
-import com.khan366kos.Objects.Product;
+import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.R;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class BaseProductsAdapter extends RecyclerView.Adapter<BaseProductsAdapte
     private List<Product> items;
 
     private String productName;
-    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+    private ViewBinderHelper viewBinderHelper;
     private int positionUpdate;
 
     //Интерфейс для реализации действий с выбранным пунктом в Recyclerview.
@@ -38,6 +38,7 @@ public class BaseProductsAdapter extends RecyclerView.Adapter<BaseProductsAdapte
     public BaseProductsAdapter(OnProductClickListener onProductClickListener) {
         this.onProductClickListener = onProductClickListener;
         items = new ArrayList<>();
+        viewBinderHelper = new ViewBinderHelper();
     }
 
     @NonNull
@@ -145,7 +146,7 @@ public class BaseProductsAdapter extends RecyclerView.Adapter<BaseProductsAdapte
             btnEditProduct = itemView.findViewById(R.id.btn_edit_product);
             ll_first = itemView.findViewById(R.id.ll_first);
             ll_secondary = itemView.findViewById(R.id.delete_layout);
-            srl = itemView.findViewById(R.id.srl);
+            srl = itemView.findViewById(R.id.srl_item_product);
 
             tvProductName.setOnClickListener(view -> {
                 //onProductClickListener.onProductClick();

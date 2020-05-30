@@ -1,6 +1,6 @@
 package com.khan366kos.rationcalculation.presentation.ProductsBase;
 
-import com.khan366kos.Objects.Product;
+import com.khan366kos.rationcalculation.Model.Product;
 
 import java.util.List;
 
