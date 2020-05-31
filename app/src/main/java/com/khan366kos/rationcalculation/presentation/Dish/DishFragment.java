@@ -92,13 +92,8 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
             @Override
             public void makeValues() {
 
-                if (dishAdapter.getDish().getWeight() != 0) {
-                    setValuesRaw();
-                }
-                try {
-                    setValuesCooked();
-                } catch (NumberFormatException e) {
-                }
+                setValuesRaw();
+                setValuesCooked();
 
                 // Обработчик событий при введении данных в EditText для хранения данных о весе
                 // готового продукта.
@@ -347,31 +342,45 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
 
     // Устанавливаем зачения параметров блюда на 100 г. в готовом виде.
     private void setValuesCooked() {
-        if (etDishWeightCooked.getText().toString().length() != 0 &&
-                !etDishWeightCooked.getText().toString().equals("-")) {
-            dishAdapter.getDish().setWeightCooked(Integer.parseInt(
-                    etDishWeightCooked.getText().toString()));
-            dishAdapter.getDish().setNutrientsCookedStr();
-            dishAdapter.getDish().setNutrientsCooked();
-            tvDishCaloriesCooked.setText(dishAdapter.getDish().getCaloriesCookedStr());
-            tvDishProteinsCooked.setText(dishAdapter.getDish().getProteinsCookedStr());
-            tvDishFatsCooked.setText(dishAdapter.getDish().getFatsCookedStr());
-            tvDishCarbohydratesCooked.setText(dishAdapter.getDish().getCarbohydratesCookedStr());
-        } else if (etDishWeightCooked.getText().toString().length() == 0) {
+
+        if (dishAdapter.getDish().getWeight() == 0) {
             tvDishCaloriesCooked.setText("-");
             tvDishProteinsCooked.setText("-");
             tvDishFatsCooked.setText("-");
             tvDishCarbohydratesCooked.setText("-");
+        } else {
+            if (!etDishWeightCooked.getText().toString().equals("-") &&
+                    etDishWeightCooked.getText().toString().length() != 0) {
+                dishAdapter.getDish().setWeightCooked(Integer.parseInt(
+                        etDishWeightCooked.getText().toString()));
+                dishAdapter.getDish().setNutrientsCookedStr();
+                dishAdapter.getDish().setNutrientsCooked();
+                tvDishCaloriesCooked.setText(dishAdapter.getDish().getCaloriesCookedStr());
+                tvDishProteinsCooked.setText(dishAdapter.getDish().getProteinsCookedStr());
+                tvDishFatsCooked.setText(dishAdapter.getDish().getFatsCookedStr());
+                tvDishCarbohydratesCooked.setText(dishAdapter.getDish().getCarbohydratesCookedStr());
+            } else {
+                tvDishCaloriesCooked.setText("-");
+                tvDishProteinsCooked.setText("-");
+                tvDishFatsCooked.setText("-");
+                tvDishCarbohydratesCooked.setText("-");
+            }
         }
-
     }
 
     // Устанавливаем зачения параметров блюда на 100 г. в сыром виде.
     private void setValuesRaw() {
-        tvDishCaloriesRaw.setText(dishAdapter.getDish().getCaloriesDefaultStr());
-        tvDishProteinsRaw.setText(dishAdapter.getDish().getProteinsDefaultStr());
-        tvDishFatsRaw.setText(dishAdapter.getDish().getFatsDefaultStr());
-        tvDishCarbohydratesRaw.setText(dishAdapter.getDish().getCarbohydratesDefaultStr());
+        if (dishAdapter.getDish().getWeight() != 0) {
+            tvDishCaloriesRaw.setText(dishAdapter.getDish().getCaloriesDefaultStr());
+            tvDishProteinsRaw.setText(dishAdapter.getDish().getProteinsDefaultStr());
+            tvDishFatsRaw.setText(dishAdapter.getDish().getFatsDefaultStr());
+            tvDishCarbohydratesRaw.setText(dishAdapter.getDish().getCarbohydratesDefaultStr());
+        } else {
+            tvDishCaloriesRaw.setText("-");
+            tvDishProteinsRaw.setText("-");
+            tvDishFatsRaw.setText("-");
+            tvDishCarbohydratesRaw.setText("-");
+        }
     }
 
     @Override
