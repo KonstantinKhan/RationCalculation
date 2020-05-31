@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Data.ProductDbHelper;
 import com.khan366kos.rationcalculation.ProductContract;
@@ -65,6 +66,13 @@ public class DataProvider {
 
     public Observable<List<Product>> getCursor(String string, List<Product> items) {
         return Observable.fromCallable(() -> callQueryProduct(string, items));
+    }
+
+    public Observable<Void> addDish(Dish dish) {
+        return Observable.fromCallable(() -> {
+            callAddDish(dish);
+            return null;
+        });
     }
 
     private void callAddProduct(String productName, String productCalories, String productProteins,
@@ -225,5 +233,9 @@ public class DataProvider {
             }
         }
         return new StringBuilder(selection).append(values).append(val);
+    }
+
+    private void callAddDish(Dish dish) {
+        productDbHelper.insertDish(dish);
     }
 }

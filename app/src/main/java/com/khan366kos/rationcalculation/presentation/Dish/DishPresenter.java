@@ -27,4 +27,12 @@ public class DishPresenter implements ContractDishFragment.DishPresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(products -> dishView.notifyCursorAdapter(products));
     }
+
+    @Override
+    public void onSaveDish() {
+        dataProvider.addDish(dishView.saveDish())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aVoid -> {}, throwable -> dishView.showErrorDuplicate());
+    }
 }

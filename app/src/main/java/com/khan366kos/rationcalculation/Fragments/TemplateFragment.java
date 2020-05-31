@@ -36,48 +36,7 @@ public class TemplateFragment extends Fragment {
         tvHeading = getActivity().findViewById(R.id.tv_heading);
         etDishName = getActivity().findViewById(R.id.et_dish_name);
 
-        tvHeading.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (tvHeading.getText().toString().equals(getString(R.string.dish_name))) {
-                    editDishName(true);
-                } else if (tvHeading.getText().toString().equals(etDishName.getText().toString())) {
-                    editDishName(false);
-                }
-            }
-        });
 
-        etDishName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (!b) {
-                    etDishName.setVisibility(View.GONE);
-                    tvHeading.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        etDishName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                // Запрещаем первым символом вводить пробел.
-                if (charSequence.length() > 0) {
-                    if (charSequence.charAt(0) == ' ') {
-                        etDishName.setText(charSequence.subSequence(1, charSequence.length()));
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
     }
 
     @Override

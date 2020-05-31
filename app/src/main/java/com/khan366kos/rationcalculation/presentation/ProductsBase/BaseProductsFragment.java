@@ -150,6 +150,6 @@ public class BaseProductsFragment extends Fragment implements ProductsView {
 
     @Override
     public void showErrorDuplicate() {
-        MyToast.showToast(this.getContext(), getResources().getString(R.string.duplicate));
+        MyToast.showToast(this.getContext(), getString(R.string.error_duplicate_product));
     }
 }

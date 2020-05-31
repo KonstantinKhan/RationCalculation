@@ -5,10 +5,10 @@ import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
-import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.R;
@@ -32,12 +31,10 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProd
     private Dish dish; // Создаваемое блюдо
     private OnMove onMove; // Интерфейс для передачи событий в DishFragment;
     private List<SuggestionProductViewHolder> list = new ArrayList<>();
-    private ViewBinderHelper viewBinderHelper;
 
     public DishAdapter(OnMove onMove) {
         this.onMove = onMove;
         dish = new Dish();
-        viewBinderHelper = new ViewBinderHelper();
     }
 
     @NonNull
@@ -167,7 +164,8 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProd
             });
 
             etProductWeightComponent.setOnEditorActionListener((textView, i, keyEvent) -> {
-                etProductWeightComponent.clearFocus();
+                if (i == EditorInfo.IME_ACTION_DONE)
+                    etProductWeightComponent.clearFocus();
                 return false;
             });
 

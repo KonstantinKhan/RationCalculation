@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Toolbar toolbar;
     private TextView tvHeading;
+    private EditText etDishName;
 
     private MenuItem menuItemSvComponent;
     private MenuItem menuItemAddComponent;
@@ -82,6 +85,28 @@ public class MainActivity extends AppCompatActivity {
                 .setEnterAnim(R.anim.slide_in_right)
                 //.setExitAnim(R.anim.slide_out_left)
                 .build();
+        
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller,
+                                             @NonNull NavDestination destination,
+                                             @Nullable Bundle arguments) {
+                switch (destination.getId()){
+                    case R.id.products_base:
+                        Log.d(TAG, "onDestinationChanged: setVisible");
+                        tvHeading.setText(R.string.products_base);
+                        break;
+                    case R.id.dish:
+                        tvHeading.setText(R.string.dish_name);
+                        break;
+                    case R.id.dishes_base:
+                        tvHeading.setText(R.string.dishes_base);
+                        break;
+                    default:
+                        tvHeading.setText(currentDate());
+                }
+            }
+        });
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             newFragmentId = menuItem.getItemId();
@@ -131,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
+        } else if(etDishName.hasFocus()) {
+            etDishName.clearFocus();
         } else super.onBackPressed();
     }
 
@@ -138,17 +165,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         switch (newFragmentId) {
             case R.id.products_base:
-                tvHeading.setText(R.string.products_base);
                 menuItemAddComponent.setVisible(true);
                 break;
             case R.id.dish:
-                tvHeading.setText(R.string.dish_name);
+                //tvHeading.setText(R.string.dish_name);
                 break;
             case R.id.dishes_base:
-                tvHeading.setText(R.string.dishes_base);
+                //tvHeading.setText(R.string.dishes_base);
                 break;
             default:
-                tvHeading.setText(currentDate());
+                //tvHeading.setText(currentDate());
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -203,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         tvHeading = findViewById(R.id.tv_heading);
         tvHeading.setText(currentDate());
+        etDishName = findViewById(R.id.et_dish_name);
     }
 
     // Метод для получеия текущей даты в виде строики в заданном формате "02 янв. 2020 г."

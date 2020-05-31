@@ -6,12 +6,13 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,22 +21,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.appcompat.widget.SearchView;
-import androidx.cursoradapter.widget.CursorAdapter;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
-import com.khan366kos.rationcalculation.Data.ProductDbHelper;
-import com.khan366kos.rationcalculation.Fragments.TemplateFragment;
+import com.khan366kos.rationcalculation.MyToast;
 import com.khan366kos.rationcalculation.R;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.*;
@@ -61,12 +57,16 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
 
     private MenuItem menuItemSvComponent;
 
-
     private DishPresenter presenter;
     private DishAdapter dishAdapter;
 
     private MatrixCursor cursor;
     private SimpleCursorAdapter simpleCursorAdapter;
+
+    private EditText etDishName;
+    private TextView tvHeading;
+
+    private InputMethodManager imm;
 
     @Nullable
     @Override
@@ -74,6 +74,8 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dish, container, false);
         init(view);
+        tvHeading.setText(getString(R.string.dish_name));
+        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         return view;
     }
 
@@ -110,7 +112,6 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-
                     }
                 });
             }
@@ -166,76 +167,119 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                     menu.findItem(R.id.mi_sv_component).expandActionView();
                     return true;
                 case R.id.clean_dish:
-                    //getComponentAdapter().getDish().getComposition().clear();
-                    //getComponentAdapter().notifyDataSetChanged();
+                    dishAdapter.getDish().getComposition().clear();
+                    dishAdapter.getDish().setNutrients();
+                    etDishWeightCooked.setText("-");
+                    dishAdapter.notifyDataSetChanged();
+                    setValuesCooked();
+                    setValuesRaw();
                     return true;
-
                 case R.id.save_dish:
 
                     // Проверяем, указано ли название продукта.
                     // Если да, то выводим сообщение и активируем поле для ввода названия блюда.
-                    /*if (getComponentAdapter().getDish().getName() == null) {
+                    if (dishAdapter.getDish().getName() == null) {
                         Toast.makeText(getActivity(), "Укажите название блюда",
                                 Toast.LENGTH_SHORT).show();
                         editDishName(true);
                         return true;
-                    }*/
+                    }
 
                     // Проверяем, есть ли в блюде добавленные продукты.
-                    // Если нет, то выводи сообщение и активируем поле для выбора продукта.
-                   /* else if (getComponentAdapter().getDish().getComposition().size() == 0) {
+                    // Если нет, то выводим сообщение и активируем поле для выбора продукта.
+                    else if (dishAdapter.getDish().getComposition().size() == 0) {
                         Toast.makeText(getActivity(), "Выберите продукт",
                                 Toast.LENGTH_SHORT).show();
-                        addProductToDish();
+                        menu.findItem(R.id.mi_sv_component).expandActionView();
                         return true;
-                    }*/
+                    }
 
                     // Проверяем, у всех ли продуктов указан вес.
-                    /*else if (getComponentAdapter().checkFillWeightProducts()) {
+                    else if (dishAdapter.checkFillWeightProducts()) {
                         Toast.makeText(getActivity(), "Укажите вес продуктов",
                                 Toast.LENGTH_SHORT).show();
                         return true;
-                    }*/
+                    }
 
                     // Проверяем, заполнено ли поле с весом готового продукта.
-                    /*else if (etDishWeightCooked.getText().toString().length() == 0 ||
+                    else if (etDishWeightCooked.getText().toString().length() == 0 ||
                             etDishWeightCooked.getText().toString().equals("-")) {
                         Toast.makeText(getActivity(), "Укажите вес готового блюда",
                                 Toast.LENGTH_SHORT).show();
                         etDishWeightCooked.requestFocus();
                         etDishWeightCooked.selectAll();
-                        return true;*/
-                   /* } else {
-                        // Сериализация блюда для хранения его в базе данных.
-                        ByteArrayOutputStream byteArrayOutputStream =
-                                new ByteArrayOutputStream();
-                        try {
-                            ObjectOutputStream outputStream =
-                                    new ObjectOutputStream(byteArrayOutputStream);
-                            outputStream.writeObject(getComponentAdapter().getDish());
-                            outputStream.close();
-
-                            // Записываем блюдо в базу данных
-                            productDbHelper.insertDish(productDbHelper.getDb(),
-                                    getComponentAdapter().getDish(), byteArrayOutputStream);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
                         return true;
-                    }*/
+                    } else {
+                        presenter.onSaveDish();
+                        return true;
+                    }
             }
             return false;
         });
 
-        /*getEtDishName().setOnEditorActionListener((textView, i, keyEvent) -> {
+        etDishName.setOnEditorActionListener((textView, i, keyEvent) -> {
 
             // Присваиваем значение из EditText TextView, если EditText не пустой.
-            if (getEtDishName().getText().toString().length() > 0) {
-                getTvHeading().setText(getEtDishName().getText().toString());
-                getComponentAdapter().getDish().setName(getTvHeading().getText().toString());
+            if (etDishName.getText().toString().length() > 0) {
+                tvHeading.setText(etDishName.getText().toString());
+                dishAdapter.getDish().setName(tvDishCaloriesCooked.getText().toString());
             }
             return true;
-        });*/
+        });
+
+        etDishName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                // Запрещаем первым символом вводить пробел.
+                if (charSequence.length() > 0) {
+                    if (charSequence.charAt(0) == ' ') {
+                        etDishName.setText(charSequence.subSequence(1, charSequence.length()));
+                    }
+                }
+                dishAdapter.getDish().setName(etDishName.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        etDishName.setOnFocusChangeListener((view, b) -> {
+            if (!b) {
+                if (dishAdapter.getDish().getName() == null) {
+                    tvHeading.setText(R.string.dish_name);
+                } else if (dishAdapter.getDish().getName().equals("")) {
+                    tvHeading.setText(R.string.dish_name);
+                } else {
+                    dishAdapter.getDish().setName(etDishName.getText().toString());
+                    tvHeading.setText(dishAdapter.getDish().getName());
+                }
+                editDishName(false);
+            }
+        });
+
+        etDishName.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                dishAdapter.getDish().setName(etDishName.getText().toString());
+                tvHeading.setText(dishAdapter.getDish().getName());
+                etDishName.clearFocus();
+            }
+            return false;
+        });
+
+        tvHeading.setOnClickListener(view -> {
+            if (tvHeading.getText().toString().equals(getString(R.string.dish_name))) {
+                etDishName.setHint("Введите название продукта");
+            } else {
+                etDishName.setText(dishAdapter.getDish().getName());
+            }
+            editDishName(true);
+        });
         super.onResume();
     }
 
@@ -338,6 +382,9 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
 
         recyclerView = view.findViewById(R.id.rv_products_in_database_component);
         recyclerView.setItemAnimator(null); // убираем анимацию элементов при изменениях.
+
+        etDishName = getActivity().findViewById(R.id.et_dish_name);
+        tvHeading = getActivity().findViewById(R.id.tv_heading);
     }
 
     // Устанавливаем зачения параметров блюда на 100 г. в готовом виде.
@@ -404,6 +451,16 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
         simpleCursorAdapter.changeCursor(cursor);
     }
 
+    @Override
+    public Dish saveDish() {
+        return dishAdapter.getDish();
+    }
+
+    @Override
+    public void showErrorDuplicate() {
+        MyToast.showToast(this.getContext(), getString(R.string.error_duplicate_dish));
+    }
+
     // Метод для получения курсора.
     private void setCursor() {
         String[] columnName = {_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_CALORIES,
@@ -427,5 +484,19 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                         R.id.tv_suggestion_product_fats,
                         R.id.tv_suggestion_product_carbohydrates},
                 0);
+    }
+
+    // Метод для регулирования отображения полей, отвечающих за ввод наименования блюда
+    // и его отображение в зависимости от значения переданного параметра.
+    public void editDishName(boolean edit) {
+        if (edit) {
+            tvHeading.setVisibility(View.GONE);
+            etDishName.setVisibility(View.VISIBLE);
+            etDishName.requestFocus();
+            imm.showSoftInput(etDishName, 0);
+        } else {
+            tvHeading.setVisibility(View.VISIBLE);
+            etDishName.setVisibility(View.GONE);
+        }
     }
 }

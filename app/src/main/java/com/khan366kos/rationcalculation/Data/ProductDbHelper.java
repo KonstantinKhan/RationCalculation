@@ -14,6 +14,8 @@ import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.ProductContract.ProductEntry;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_NAME;
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TABLE_DISHES;
@@ -104,27 +106,42 @@ public class ProductDbHelper extends SQLiteOpenHelper {
     }
 
     // Метод для сохранения блюда в базу данных.
-    public void insertDish(SQLiteDatabase db, Dish dish, ByteArrayOutputStream outputStream) {
-        ContentValues cv = new ContentValues();
-        cv.put(ProductEntry.COLUMN_DISH_BLOB, outputStream.toByteArray());
-        cv.put(ProductEntry.COLUMN_DISH_NAME, dish.getName());
-        cv.put(ProductEntry.COLUMN_DISH_CALORIES, (int) dish.getCaloriesCooked());
-        cv.put(ProductEntry.COLUMN_DISH_PROTEINS, dish.getProteinsCooked());
-        cv.put(ProductEntry.COLUMN_DISH_FATS, dish.getFatsCooked());
+    public void insertDish(Dish dish) {
 
+        // Сериализация блюда для хранения его в базе данных.
+        ByteArrayOutputStream byteArrayOutputStream =
+                new ByteArrayOutputStream();
         try {
+            ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream);
+            outputStream.writeObject(dish);
+            outputStream.close();
+
+            ContentValues cv = new ContentValues();
+            cv.put(ProductEntry.COLUMN_DISH_BLOB, byteArrayOutputStream.toByteArray());
+            cv.put(ProductEntry.COLUMN_DISH_NAME, dish.getName());
+            cv.put(ProductEntry.COLUMN_DISH_CALORIES, dish.getCaloriesCooked());
+            cv.put(ProductEntry.COLUMN_DISH_PROTEINS, dish.getProteinsCooked());
+            cv.put(ProductEntry.COLUMN_DISH_FATS, dish.getFatsCooked());
+
             cv.put(ProductEntry.COLUMN_DISH_CARBOHYDRATES, dish.getCarbohydratesCooked());
-            db.insertOrThrow(ProductEntry.TABLE_DISHES, null, cv);
-            Cursor c = db.query(TABLE_DISHES,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null);
-            Log.d(TAG, String.valueOf(c.getCount()));
-        } catch (SQLException e) {
-            Log.d(TAG, "Блюдо с таким названием уже есть в базе");
+            db.insertOrThrow(TABLE_DISHES, null, cv);
+
+            /*try {
+
+                Cursor c = db.query(TABLE_DISHES,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null);
+                Log.d(TAG, String.valueOf(c.getCount()));
+            } catch (SQLException e) {
+                Log.d(TAG, "Блюдо с таким названием уже есть в базе");
+            }*/
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
