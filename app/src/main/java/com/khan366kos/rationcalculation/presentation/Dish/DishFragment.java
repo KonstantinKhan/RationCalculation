@@ -444,10 +444,10 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
         for (int i = 0; i < products.size(); i++) {
             temp[0] = String.valueOf(i);
             temp[1] = products.get(i).getName();
-            temp[2] = String.valueOf(products.get(i).getCaloriesDefault());
-            temp[3] = String.valueOf(products.get(i).getProteinsDefault());
-            temp[4] = String.valueOf(products.get(i).getFatsDefault());
-            temp[5] = String.valueOf(products.get(i).getCarbohydratesDefault());
+            temp[2] = String.valueOf(products.get(i).getCaloriesDefault()).replace(".", ",");
+            temp[3] = String.valueOf(products.get(i).getProteinsDefault()).replace(".", ",");
+            temp[4] = String.valueOf(products.get(i).getFatsDefault()).replace(".", ",");
+            temp[5] = String.valueOf(products.get(i).getCarbohydratesDefault()).replace(".", ",");
             cursor.addRow(temp);
         }
 
