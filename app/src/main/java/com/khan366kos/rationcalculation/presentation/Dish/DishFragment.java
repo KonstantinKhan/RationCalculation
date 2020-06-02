@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.khan366kos.rationcalculation.MainActivity;
 import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.MyToast;
@@ -275,12 +276,13 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
         });
 
         tvHeading.setOnClickListener(view -> {
-            if (tvHeading.getText().toString().equals(getString(R.string.dish_name))) {
-                etDishName.setHint("Введите название продукта");
-            } else {
-                etDishName.setText(dishAdapter.getDish().getName());
+            if (MainActivity.newFragmentId == R.id.dish) {
+                if (tvHeading.getText().toString().equals(getString(R.string.dish_name))) {
+                    etDishName.setHint("Введите название продукта");
+                } else
+                    etDishName.setText(dishAdapter.getDish().getName());
+                editDishName(true);
             }
-            editDishName(true);
         });
         super.onResume();
     }
@@ -505,7 +507,6 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop: ");
         etDishName.setText("");
     }
 }

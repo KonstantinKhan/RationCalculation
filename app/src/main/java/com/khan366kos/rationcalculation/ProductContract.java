@@ -10,7 +10,7 @@ public final class ProductContract {
 
         public final static String _ID = BaseColumns._ID;
 
-        public final static String TABLE_NAME_PRODUCTS = "products";
+        public final static String TABLE_PRODUCTS = "products";
         public final static String COLUMN_PRODUCT_NAME = "productName";
         public final static String COLUMN_PRODUCT_CALORIES = "productCalories";
         public final static String COLUMN_PRODUCT_PROTEINS = "productProteins";

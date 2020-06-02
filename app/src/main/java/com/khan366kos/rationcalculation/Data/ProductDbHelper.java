@@ -3,10 +3,8 @@ package com.khan366kos.rationcalculation.Data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -19,8 +17,7 @@ import java.io.ObjectOutputStream;
 
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_NAME;
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TABLE_DISHES;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TABLE_NAME_PRODUCTS;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TABLE_PRODUCTS;
 
 public class ProductDbHelper extends SQLiteOpenHelper {
 
@@ -51,7 +48,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         // Строка для создания таблицы для хранения данных о продуктах
-        String SQL_CREATE_PRODUCTS_TABLE = "CREATE TABLE " + ProductEntry.TABLE_NAME_PRODUCTS + " ("
+        String SQL_CREATE_PRODUCTS_TABLE = "CREATE TABLE " + ProductEntry.TABLE_PRODUCTS + " ("
                 + ProductEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
                 + ProductEntry.COLUMN_PRODUCT_NAME + " TEXT NOT NULL UNIQUE, "
                 + ProductEntry.COLUMN_PRODUCT_CALORIES + " DOUBLE NOT NULL, "
@@ -80,7 +77,6 @@ public class ProductDbHelper extends SQLiteOpenHelper {
 
     public void setDb() {
         if (db == null) {
-            //Log.d(TAG, "Подключаем базу данных");
             db = this.getReadableDatabase();
         }
     }
@@ -102,7 +98,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
         cv.put(ProductEntry.COLUMN_PRODUCT_FATS, Double.parseDouble(productFats.replace(",", ".")));
         cv.put(ProductEntry.COLUMN_PRODUCT_CARBOHYDRATES, Double.parseDouble(productCarbohydrates.replace(",", ".")));
 
-        db.insert(ProductEntry.TABLE_NAME_PRODUCTS, null, cv);
+        db.insert(ProductEntry.TABLE_PRODUCTS, null, cv);
     }
 
     // Метод для сохранения блюда в базу данных.
@@ -111,8 +107,9 @@ public class ProductDbHelper extends SQLiteOpenHelper {
         // Сериализация блюда для хранения его в базе данных.
         ByteArrayOutputStream byteArrayOutputStream =
                 new ByteArrayOutputStream();
+        ObjectOutputStream outputStream;
         try {
-            ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream);
+            outputStream = new ObjectOutputStream(byteArrayOutputStream);
             outputStream.writeObject(dish);
             outputStream.close();
 
@@ -122,23 +119,8 @@ public class ProductDbHelper extends SQLiteOpenHelper {
             cv.put(ProductEntry.COLUMN_DISH_CALORIES, dish.getCaloriesCooked());
             cv.put(ProductEntry.COLUMN_DISH_PROTEINS, dish.getProteinsCooked());
             cv.put(ProductEntry.COLUMN_DISH_FATS, dish.getFatsCooked());
-
             cv.put(ProductEntry.COLUMN_DISH_CARBOHYDRATES, dish.getCarbohydratesCooked());
             db.insertOrThrow(TABLE_DISHES, null, cv);
-
-            /*try {
-
-                Cursor c = db.query(TABLE_DISHES,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null);
-                Log.d(TAG, String.valueOf(c.getCount()));
-            } catch (SQLException e) {
-                Log.d(TAG, "Блюдо с таким названием уже есть в базе");
-            }*/
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -167,6 +149,6 @@ public class ProductDbHelper extends SQLiteOpenHelper {
     }
 
     public void deleteProduct(String name) {
-        db.delete(TABLE_NAME_PRODUCTS, COLUMN_PRODUCT_NAME + " = '" + name + "'", null);
+        db.delete(TABLE_PRODUCTS, COLUMN_PRODUCT_NAME + " = '" + name + "'", null);
     }
 }

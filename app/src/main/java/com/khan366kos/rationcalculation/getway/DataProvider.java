@@ -2,7 +2,6 @@ package com.khan366kos.rationcalculation.getway;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
@@ -10,6 +9,9 @@ import com.khan366kos.rationcalculation.Data.ProductDbHelper;
 import com.khan366kos.rationcalculation.ProductContract;
 import com.khan366kos.rationcalculation.RationCalculationApp;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +77,10 @@ public class DataProvider {
         });
     }
 
+    public Observable<List<Dish>> getAllDishes() {
+        return Observable.fromCallable(this::callGetAllDishes);
+    }
+
     private void callAddProduct(String productName, String productCalories, String productProteins,
                                 String productFats, String productCarbohydrates) {
         productDbHelper.insertProduct(productName, productCalories, productProteins,
@@ -85,7 +91,7 @@ public class DataProvider {
         Product product;
         productDbHelper.setDb();
 
-        Cursor cursor = productDbHelper.getDb().query(TABLE_NAME_PRODUCTS,
+        Cursor cursor = productDbHelper.getDb().query(TABLE_PRODUCTS,
                 null,
                 COLUMN_PRODUCT_NAME + " = ?",
                 new String[]{productName},
@@ -121,7 +127,7 @@ public class DataProvider {
 
         productDbHelper.setDb();
 
-        productDbHelper.setCursor(TABLE_NAME_PRODUCTS);
+        productDbHelper.setCursor(TABLE_PRODUCTS);
         Cursor cursor = productDbHelper.getCursor();
 
         int columnProductName = cursor.getColumnIndex(COLUMN_PRODUCT_NAME);
@@ -161,7 +167,7 @@ public class DataProvider {
         cv.put(ProductContract.ProductEntry.COLUMN_PRODUCT_FATS, productFats);
         cv.put(ProductContract.ProductEntry.COLUMN_PRODUCT_CARBOHYDRATES, productCarbohydrates);
 
-        productDbHelper.getDb().update(TABLE_NAME_PRODUCTS,
+        productDbHelper.getDb().update(TABLE_PRODUCTS,
                 cv,
                 "_id = ?",
                 new String[]{String.valueOf(columnProductId)});
@@ -175,7 +181,7 @@ public class DataProvider {
         List<Product> queryProduct = new ArrayList<>();
         Product product;
 
-        Cursor cursor = productDbHelper.getDb().query(TABLE_NAME_PRODUCTS,
+        Cursor cursor = productDbHelper.getDb().query(TABLE_PRODUCTS,
                 null,
                 where(s, items).toString(),
                 null,
@@ -237,5 +243,37 @@ public class DataProvider {
 
     private void callAddDish(Dish dish) {
         productDbHelper.insertDish(dish);
+    }
+
+    private List<Dish> callGetAllDishes() {
+        Dish dish;
+        List<Dish> dishes = new ArrayList<>();
+
+        productDbHelper.setDb();
+
+        productDbHelper.setCursor(TABLE_DISHES);
+        Cursor cursor = productDbHelper.getCursor();
+
+        ByteArrayInputStream arrayInputStream;
+        ObjectInputStream objectInputStream;
+
+        if (cursor.moveToFirst()) {
+            do {
+                try {
+                    arrayInputStream = new ByteArrayInputStream(cursor.getBlob(cursor.getColumnIndex(COLUMN_DISH_BLOB)));
+                    objectInputStream = new ObjectInputStream(arrayInputStream);
+                    dish = (Dish) objectInputStream.readObject();
+                    dishes.add(dish);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return dishes;
     }
 }

@@ -17,7 +17,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MenuItem menuItemAddComponent;
 
-    private int newFragmentId;
+    public static int newFragmentId;
     private int oldFragmentId;
 
     @Override
@@ -71,28 +70,21 @@ public class MainActivity extends AppCompatActivity {
 
         NavOptions navOptions = new NavOptions.Builder()
                 .setEnterAnim(R.anim.slide_in_right)
-                //.setExitAnim(R.anim.slide_out_left)
                 .build();
 
-        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-            @Override
-            public void onDestinationChanged(@NonNull NavController controller,
-                                             @NonNull NavDestination destination,
-                                             @Nullable Bundle arguments) {
-                switch (destination.getId()) {
-                    case R.id.products_base:
-                        Log.d(TAG, "onDestinationChanged: setVisible");
-                        tvHeading.setText(R.string.products_base);
-                        break;
-                    case R.id.dish:
-                        tvHeading.setText(R.string.dish_name);
-                        break;
-                    case R.id.dishes_base:
-                        tvHeading.setText(R.string.dishes_base);
-                        break;
-                    default:
-                        tvHeading.setText(currentDate());
-                }
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            switch (destination.getId()) {
+                case R.id.products_base:
+                    tvHeading.setText(R.string.products_base);
+                    break;
+                case R.id.dish:
+                    tvHeading.setText(R.string.dish_name);
+                    break;
+                case R.id.dishes_base:
+                    tvHeading.setText(R.string.dishes_base);
+                    break;
+                default:
+                    tvHeading.setText(currentDate());
             }
         });
 
@@ -184,6 +176,9 @@ public class MainActivity extends AppCompatActivity {
                         (InputMethodManager) drawerView.getContext()
                                 .getSystemService(Activity.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(drawerView.getWindowToken(), 0);
+                if (etDishName.hasFocus()) {
+                    etDishName.clearFocus();
+                }
             }
 
             @Override

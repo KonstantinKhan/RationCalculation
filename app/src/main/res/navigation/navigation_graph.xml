@@ -26,6 +26,6 @@
     </fragment>
     <fragment
         android:id="@+id/dishes_base"
-        android:name="com.khan366kos.rationcalculation.Fragments.BaseDishesFragment"
+        android:name="com.khan366kos.rationcalculation.presentation.DishesBase.BaseDishesFragment"
         tools:layout="@layout/fragment_base_dishes" />
 </navigation>
