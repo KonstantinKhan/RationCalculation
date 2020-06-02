@@ -335,10 +335,10 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
 
                 // Новый продукт с данными, выбранными из поиска.
                 Product product = new Product(cursor.getString(1),
-                        cursor.getDouble(2),
-                        cursor.getDouble(3),
-                        cursor.getDouble(4),
-                        cursor.getDouble(5));
+                        Double.parseDouble(cursor.getString(2).replace(",", ".")),
+                        Double.parseDouble(cursor.getString(3).replace(",", ".")),
+                        Double.parseDouble(cursor.getString(4).replace(",", ".")),
+                        Double.parseDouble(cursor.getString(5).replace(",", ".")));
 
                 // Добавляем продукт в блюдо
                 dishAdapter.getDish().getComposition().add(product);
