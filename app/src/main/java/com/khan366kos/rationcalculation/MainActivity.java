@@ -13,13 +13,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
@@ -28,8 +24,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
-import com.khan366kos.rationcalculation.Data.ProductDbHelper;
-import com.khan366kos.rationcalculation.Fragments.FragmentAddFirstProduct;
 
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 
@@ -41,16 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private DrawerLayout drawerLayout;
-    private SearchView svProduct;
-    private FragmentTransaction ft;
-    private Fragment fragmentAddFirstProduct;
     private NavController navController;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private TextView tvHeading;
     private EditText etDishName;
 
-    private MenuItem menuItemSvComponent;
     private MenuItem menuItemAddComponent;
 
     private int newFragmentId;
@@ -65,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
         init();
 
         this.setTitle("");
-
-        fragmentAddFirstProduct = new FragmentAddFirstProduct();
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,13 +73,13 @@ public class MainActivity extends AppCompatActivity {
                 .setEnterAnim(R.anim.slide_in_right)
                 //.setExitAnim(R.anim.slide_out_left)
                 .build();
-        
+
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController controller,
                                              @NonNull NavDestination destination,
                                              @Nullable Bundle arguments) {
-                switch (destination.getId()){
+                switch (destination.getId()) {
                     case R.id.products_base:
                         Log.d(TAG, "onDestinationChanged: setVisible");
                         tvHeading.setText(R.string.products_base);
@@ -141,14 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-
         getMenuInflater().inflate(R.menu.tollbar_menu_ration, menu);
-
-        menuItemSvComponent = menu.findItem(R.id.mi_sv_component);
-        svProduct = (SearchView) menuItemSvComponent.getActionView();
-
         menuItemAddComponent = menu.findItem(R.id.add_component);
-
         return true;
     }
 
@@ -156,68 +138,16 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        } else if(etDishName.hasFocus()) {
+        } else if (etDishName.hasFocus()) {
             etDishName.clearFocus();
         } else super.onBackPressed();
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        switch (newFragmentId) {
-            case R.id.products_base:
-                menuItemAddComponent.setVisible(true);
-                break;
-            case R.id.dish:
-                //tvHeading.setText(R.string.dish_name);
-                break;
-            case R.id.dishes_base:
-                //tvHeading.setText(R.string.dishes_base);
-                break;
-            default:
-                //tvHeading.setText(currentDate());
-        }
+        if (newFragmentId == R.id.products_base) menuItemAddComponent.setVisible(true);
         return super.onPrepareOptionsMenu(menu);
     }
-
-   /* @Override
-    public boolean onOptionsItemSelected(@NonNull final MenuItem item) {
-        if (item.getItemId() == R.id.mi_sv_component) {
-
-            // Слушатель наличия фокуса в searchview.
-            svProduct.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean b) {
-                    Log.d(TAG, "Проверка фокуса");
-                    if (!b) {
-                        Log.d(TAG, "Нет фокуса");
-                        //item.collapseActionView();
-                        Log.d(TAG, getCurrentFocus().toString());
-                    } else {
-                        Log.d(TAG, "Есть фокус");
-                    }
-
-                    FragmentManager fm = getSupportFragmentManager();
-                    ft = fm.beginTransaction();
-                    // Если фокус на searchview есть, то нужно проверить, есть ли в базе продукты/блюда
-                    if (b) {
-                        productDbHelper = ProductDbHelper.getInstance(MainActivity.this);
-
-                        // Если база пустая, то вызвать фрагмент для добавления первого продукта.
-                        if (productDbHelper.getCursor().getCount() == 0) {
-                            ft.add(R.id.container, fragmentAddFirstProduct);
-                        } else {
-                            Log.d(TAG, productDbHelper.getDb().getPath());
-                        }
-                        // При снятии фокуса с serchview удалить фрагмент.
-                    } else {
-                        ft.remove(fragmentAddFirstProduct);
-                    }
-                    ft.commit();
-                }
-            });
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -246,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
             }
 
             @Override
@@ -259,12 +188,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
-
             }
 
             @Override
             public void onDrawerStateChanged(int newState) {
-
             }
         });
     }
