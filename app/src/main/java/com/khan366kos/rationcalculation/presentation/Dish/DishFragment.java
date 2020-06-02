@@ -6,6 +6,7 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -181,6 +182,7 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                     if (dishAdapter.getDish().getName() == null) {
                         Toast.makeText(getActivity(), "Укажите название блюда",
                                 Toast.LENGTH_SHORT).show();
+                        etDishName.setHint("Введите название продукта");
                         editDishName(true);
                         return true;
                     }
@@ -498,5 +500,12 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
             tvHeading.setVisibility(View.VISIBLE);
             etDishName.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+        etDishName.setText("");
     }
 }
