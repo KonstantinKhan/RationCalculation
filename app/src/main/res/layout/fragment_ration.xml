@@ -63,6 +63,12 @@
 
     </GridLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rl_ration_component"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gl_dish_info_small" />
+
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="wrap_content"
@@ -70,8 +76,7 @@
         android:layout_below="@id/gl_dish_info_small"
         android:layout_centerInParent="true"
         android:orientation="vertical"
-        android:paddingTop="98dp">
-    </LinearLayout>
+        android:paddingTop="98dp"></LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_menu"

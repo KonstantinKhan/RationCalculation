@@ -6,7 +6,7 @@
     app:startDestination="@id/ration">
     <fragment
         android:id="@+id/ration"
-        android:name="com.khan366kos.rationcalculation.Fragments.RationFragment"
+        android:name="com.khan366kos.rationcalculation.presentation.Ration.RationFragment"
         tools:layout="@layout/fragment_ration">
         <action
             android:id="@+id/action_ration_to_base_products"

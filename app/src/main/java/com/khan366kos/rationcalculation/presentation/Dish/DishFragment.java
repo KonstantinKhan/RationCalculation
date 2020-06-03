@@ -33,6 +33,8 @@ import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.MyToast;
 import com.khan366kos.rationcalculation.R;
+import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterFactory;
+import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterTypes;
 
 import java.util.List;
 
@@ -70,6 +72,8 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
 
     private InputMethodManager imm;
 
+    private CursorAdapterFactory cursorAdapterFactory;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -86,8 +90,10 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
         super.onAttach(context);
 
         setHasOptionsMenu(true); // Позволяем фрагменту работать с меню.
+        cursorAdapterFactory = new CursorAdapterFactory();
 
-        setSimpleCursorAdapter(); // Получаем экземпляр SimpleCursorAdapter.
+        simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(getContext(),
+                CursorAdapterTypes.PRODUCTS);
 
         presenter = new DishPresenter(this); // Получаем экземпляр DishPresenter.
 
@@ -470,24 +476,6 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
         String[] columnName = {_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_CALORIES,
                 COLUMN_PRODUCT_PROTEINS, COLUMN_PRODUCT_FATS, COLUMN_PRODUCT_CARBOHYDRATES};
         cursor = new MatrixCursor(columnName);
-    }
-
-    // Метод для получения экземпляра SimpleCursorAdapter.
-    public void setSimpleCursorAdapter() {
-        simpleCursorAdapter = new SimpleCursorAdapter(getContext(),
-                R.layout.fragment_suggestions,
-                null,
-                new String[]{COLUMN_PRODUCT_NAME,
-                        COLUMN_PRODUCT_CALORIES,
-                        COLUMN_PRODUCT_PROTEINS,
-                        COLUMN_PRODUCT_FATS,
-                        COLUMN_PRODUCT_CARBOHYDRATES},
-                new int[]{R.id.tv_suggestion_product_name,
-                        R.id.tv_suggestion_product_calories,
-                        R.id.tv_suggestion_product_proteins,
-                        R.id.tv_suggestion_product_fats,
-                        R.id.tv_suggestion_product_carbohydrates},
-                0);
     }
 
     // Метод для регулирования отображения полей, отвечающих за ввод наименования блюда
