@@ -45,6 +45,10 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         notifyDataSetChanged();
     }
 
+    public List<Product> getComponents() {
+        return components;
+    }
+
     public class RationViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvName;

@@ -92,7 +92,7 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
         setHasOptionsMenu(true); // Позволяем фрагменту работать с меню.
         cursorAdapterFactory = new CursorAdapterFactory();
 
-        simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(getContext(),
+        simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(context,
                 CursorAdapterTypes.PRODUCTS);
 
         presenter = new DishPresenter(this); // Получаем экземпляр DishPresenter.
@@ -318,8 +318,8 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
 
             @Override
             public boolean onQueryTextChange(String s) {
-                svComponent.post(() -> presenter.onQueryTextChange(s,
-                        dishAdapter.getDish().getComposition()));
+                svComponent.post(() -> presenter.onQueryTextChange
+                        (s, dishAdapter.getDish().getComposition()));
                 return false;
             }
         });

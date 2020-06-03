@@ -1,5 +1,7 @@
 package com.khan366kos.rationcalculation.presentation.Ration;
 
+import android.content.Context;
+import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,13 +22,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.khan366kos.rationcalculation.Fragments.TemplateFragment;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.R;
+import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterFactory;
+import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterTypes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_CALORIES;
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_CARBOHYDRATES;
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_FATS;
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_NAME;
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_PROTEINS;
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry._ID;
 
 public class RationFragment extends TemplateFragment implements ContractRational.RationView {
 
@@ -37,6 +48,18 @@ public class RationFragment extends TemplateFragment implements ContractRational
     private SearchView svComponent;
     private Menu menu;
     private MenuItem menuItemSvComponent;
+    private MatrixCursor cursor;
+    private SimpleCursorAdapter simpleCursorAdapter;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        CursorAdapterFactory cursorAdapterFactory = new CursorAdapterFactory();
+
+        simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(context,
+                CursorAdapterTypes.PRODUCTS);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,6 +118,25 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
         // Устанавливаем вспомогательную надпись в поле поиска.
         svComponent.setQueryHint("Выберите продукт");
+
+        svComponent.setSuggestionsAdapter(simpleCursorAdapter);
+        
+        // Устанавливаем максимальную ширину поля отображения вариантов поиска.
+        svComponent.setMaxWidth(Integer.MAX_VALUE);
+
+        svComponent.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                svComponent.post(() -> presenter
+                        .onQueryTextChange(newText, adapter.getComponents()));
+                return false;
+            }
+        });
     }
 
     private void init(View view) {
@@ -111,8 +153,35 @@ public class RationFragment extends TemplateFragment implements ContractRational
         return simpleDateFormat.format(date) + " г." + " (Сегодня) ";
     }
 
+    // Метод для получения курсора.
+    private void setCursor() {
+        String[] columnName = {_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_CALORIES,
+                COLUMN_PRODUCT_PROTEINS, COLUMN_PRODUCT_FATS, COLUMN_PRODUCT_CARBOHYDRATES};
+        cursor = new MatrixCursor(columnName);
+    }
+
     @Override
     public void showComponent(List<Product> components) {
         adapter.setComponents(components);
+    }
+
+    @Override
+    public void notifyCursorAdapter(List<Product> components) {
+        setCursor();
+        String[] temp = new String[6];
+
+        // Заполняем курсор данными из полученного списка продуктов.
+        for (int i = 0; i < components.size(); i++) {
+            temp[0] = String.valueOf(i);
+            temp[1] = components.get(i).getName();
+            temp[2] = String.valueOf(components.get(i).getCaloriesDefault()).replace(".", ",");
+            temp[3] = String.valueOf(components.get(i).getProteinsDefault()).replace(".", ",");
+            temp[4] = String.valueOf(components.get(i).getFatsDefault()).replace(".", ",");
+            temp[5] = String.valueOf(components.get(i).getCarbohydratesDefault()).replace(".", ",");
+            cursor.addRow(temp);
+        }
+
+        // Обновляем курсор.
+        simpleCursorAdapter.changeCursor(cursor);
     }
 }

@@ -7,9 +7,12 @@ import java.util.List;
 public interface ContractRational {
     interface RationView {
         void showComponent(List<Product> components);
+        void notifyCursorAdapter(List<Product> components);
     }
 
     interface RationPresenter {
         void onBindViewHolder();
+
+        void onQueryTextChange(String s, List<Product> components);
     }
 }
