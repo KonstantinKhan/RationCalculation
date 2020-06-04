@@ -22,7 +22,7 @@ public class DishPresenter implements ContractDishFragment.DishPresenter {
 
     @Override
     public void onQueryTextChange(String string, List<Product> items) {
-        dataProvider.getCursor(string, items)
+        dataProvider.getCursorProduct(string, items)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(products -> dishView.notifyCursorAdapter(products));

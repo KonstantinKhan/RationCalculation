@@ -26,8 +26,16 @@ public class RationPresenter implements ContractRational.RationPresenter {
     }
 
     @Override
-    public void onQueryTextChange(String s, List<Product> items) {
-        dataProvider.getCursor(s, items)
+    public void onQueryTextChangeProduct(String s, List<Product> components) {
+        dataProvider.getCursorProduct(s, components)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(products -> view.notifyCursorAdapter(products));
+    }
+
+    @Override
+    public void onQueryTextChangeDish(String s, List<Product> components) {
+        dataProvider.getCursorDish(s, components)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(products -> view.notifyCursorAdapter(products));

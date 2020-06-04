@@ -40,6 +40,10 @@ public class DataProvider {
         return Observable.fromCallable(() -> callGetProduct(productName));
     }
 
+    public Observable<List<Product>> getCursorDish(String s, List<Product> components) {
+        return Observable.fromCallable(() -> callQueryDishes(s, components));
+    }
+
     public Observable<Void> addProduct(String productName, String productCalories,
                                        String productProteins, String productFats,
                                        String productCarbohydrates) {
@@ -66,8 +70,8 @@ public class DataProvider {
         );
     }
 
-    public Observable<List<Product>> getCursor(String string, List<Product> items) {
-        return Observable.fromCallable(() -> callQueryProduct(string, items));
+    public Observable<List<Product>> getCursorProduct(String string, List<Product> items) {
+        return Observable.fromCallable(() -> callQueryProducts(string, items));
     }
 
     public Observable<Void> addDish(Dish dish) {
@@ -175,7 +179,7 @@ public class DataProvider {
         return callGetProduct(productName);
     }
 
-    private List<Product> callQueryProduct(String s, List<Product> items) {
+    private List<Product> callQueryProducts(String s, List<Product> items) {
         productDbHelper.setDb();
 
         List<Product> queryProduct = new ArrayList<>();
@@ -183,7 +187,7 @@ public class DataProvider {
 
         Cursor cursor = productDbHelper.getDb().query(TABLE_PRODUCTS,
                 null,
-                where(s, items).toString(),
+                where(s, items, COLUMN_PRODUCT_NAME).toString(),
                 null,
                 null,
                 null,
@@ -214,11 +218,11 @@ public class DataProvider {
 
     // Метод для получения значений продуктов, которые уже использованы в блюде в виде строки,
     // которая передается в SQL-запрос.
-    private StringBuilder where(String string, List<Product> items) {
+    private StringBuilder where(String string, List<Product> items, String columnName) {
         String selection = "";
         StringBuilder values = new StringBuilder();
         if (items.size() > 0) {
-            selection = COLUMN_PRODUCT_NAME + " NOT LIKE ";
+            selection = columnName + " NOT LIKE ";
             for (int i = 0; i < items.size(); i++) {
                 if (i == 0) {
                     values.append("'" + items.get(i).getName() + "'");
@@ -231,11 +235,11 @@ public class DataProvider {
         StringBuilder val = new StringBuilder();
         if (items.size() > 0) {
             if (string.length() > 0) {
-                val.append(" AND " + COLUMN_PRODUCT_NAME + " LIKE '%" + string + "%'");
+                val.append(" AND " + columnName + " LIKE '%" + string + "%'");
             }
         } else {
             if (string.length() > 0) {
-                val.append(COLUMN_PRODUCT_NAME + " LIKE '%" + string + "%'");
+                val.append(columnName + " LIKE '%" + string + "%'");
             }
         }
         return new StringBuilder(selection).append(values).append(val);
@@ -275,5 +279,43 @@ public class DataProvider {
         cursor.close();
 
         return dishes;
+    }
+
+    private List<Product> callQueryDishes(String s, List<Product> items) {
+        productDbHelper.setDb();
+
+        List<Product> queryProduct = new ArrayList<>();
+        Dish dish;
+
+        ByteArrayInputStream arrayInputStream;
+        ObjectInputStream objectInputStream;
+
+        Cursor cursor = productDbHelper.getDb().query(TABLE_DISHES,
+                null,
+                where(s, items, COLUMN_DISH_NAME).toString(),
+                null,
+                null,
+                null,
+                null);
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                try {
+                    arrayInputStream = new ByteArrayInputStream(cursor.getBlob(cursor.getColumnIndex(COLUMN_DISH_BLOB)));
+                    objectInputStream = new ObjectInputStream(arrayInputStream);
+                    dish = (Dish) objectInputStream.readObject();
+                    queryProduct.add(dish);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return queryProduct;
     }
 }

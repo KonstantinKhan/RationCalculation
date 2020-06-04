@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +44,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
     private MenuItem menuItemSvComponent;
     private MatrixCursor cursor;
     private SimpleCursorAdapter simpleCursorAdapter;
+    private int bnvMenu;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -81,6 +81,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
         bnv.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.pick_product:
+                    bnvMenu = R.id.pick_product;
                     menuItem.setChecked(true);
                     getMenu().findItem(R.id.mi_sv_component).expandActionView();
                     getSvComponent().setQueryHint("Выберите продукт");
@@ -88,6 +89,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
                 case R.id.clean_dish:
                     return true;
                 case R.id.pick_dish:
+                    bnvMenu = R.id.pick_dish;
                     getMenu().findItem(R.id.mi_sv_component).expandActionView();
                     getSvComponent().setQueryHint("Выберите блюдо");
                     return true;
@@ -127,8 +129,19 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                svComponent.post(() -> presenter
-                        .onQueryTextChange(newText, adapter.getComponents()));
+                switch (bnvMenu) {
+                    case R.id.pick_product:
+                        svComponent.post(() -> presenter
+                                .onQueryTextChangeProduct(newText, adapter.getComponents()));
+                        break;
+                    case R.id.pick_dish:
+                        svComponent.post(() -> presenter
+                                .onQueryTextChangeDish(newText, adapter.getComponents()));
+                        break;
+                    default:
+                }
+
+
                 return false;
             }
         });
@@ -157,8 +170,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
                 adapter.getComponents().add(product);
 
                 // Прокручивает RecyclerView до добавленного компонента.
-                recyclerView.smoothScrollToPosition(adapter
-                        .getComponents().size() - 1);
+                recyclerView.smoothScrollToPosition(adapter.getComponents().size() - 1);
 
                 // Обнуляем строку запроса.
                 svComponent.setQuery("", false);

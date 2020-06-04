@@ -13,6 +13,8 @@ public interface ContractRational {
     interface RationPresenter {
         void onBindViewHolder();
 
-        void onQueryTextChange(String s, List<Product> components);
+        void onQueryTextChangeProduct(String s, List<Product> components);
+
+        void onQueryTextChangeDish(String newText, List<Product> components);
     }
 }
