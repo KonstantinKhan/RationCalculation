@@ -1,6 +1,7 @@
 package com.khan366kos.rationcalculation.presentation.Ration;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,13 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_CALORIES;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_CARBOHYDRATES;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_FATS;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_NAME;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_PROTEINS;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry._ID;
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.*;
 
 public class RationFragment extends TemplateFragment implements ContractRational.RationView {
 
@@ -120,7 +115,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
         svComponent.setQueryHint("Выберите продукт");
 
         svComponent.setSuggestionsAdapter(simpleCursorAdapter);
-        
+
         // Устанавливаем максимальную ширину поля отображения вариантов поиска.
         svComponent.setMaxWidth(Integer.MAX_VALUE);
 
@@ -135,6 +130,42 @@ public class RationFragment extends TemplateFragment implements ContractRational
                 svComponent.post(() -> presenter
                         .onQueryTextChange(newText, adapter.getComponents()));
                 return false;
+            }
+        });
+
+        svComponent.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+
+                int i = adapter.getItemCount(); // Количество компонентов в блюде.
+
+                Cursor cursor = svComponent.getSuggestionsAdapter().getCursor();
+                cursor.moveToPosition(position);
+
+                Product product = new Product(cursor.getString(1),
+                        Double.parseDouble(cursor.getString(2).replace(",", ".")),
+                        Double.parseDouble(cursor.getString(3).replace(",", ".")),
+                        Double.parseDouble(cursor.getString(4).replace(",", ".")),
+                        Double.parseDouble(cursor.getString(5).replace(",", ".")));
+
+                // Добавляем продукт в рацион.
+                adapter.getComponents().add(product);
+
+                // Прокручивает RecyclerView до добавленного компонента.
+                recyclerView.smoothScrollToPosition(adapter
+                        .getComponents().size() - 1);
+
+                // Обнуляем строку запроса.
+                svComponent.setQuery("", false);
+
+                adapter.notifyItemInserted(i);
+                cursor.close();
+                return true;
             }
         });
     }

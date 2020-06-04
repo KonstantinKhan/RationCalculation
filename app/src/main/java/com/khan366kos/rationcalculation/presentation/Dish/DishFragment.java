@@ -349,13 +349,15 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                 // Добавляем продукт в блюдо
                 dishAdapter.getDish().getComposition().add(product);
 
-                // Прокручивает RecyclerView до добавленного блюда.
+                // Прокручивает RecyclerView до добавленного продукта.
                 recyclerView.smoothScrollToPosition(dishAdapter
                         .getDish().getComposition().size() - 1);
 
                 // Обнуляем строку запроса.
                 svComponent.setQuery("", false);
                 dishAdapter.notifyItemInserted(i);
+
+                cursor.close();
 
                 return true;
             }
