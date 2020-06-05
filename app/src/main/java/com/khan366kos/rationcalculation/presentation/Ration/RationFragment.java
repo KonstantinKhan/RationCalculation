@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,15 +46,13 @@ public class RationFragment extends TemplateFragment implements ContractRational
     private MatrixCursor cursor;
     private SimpleCursorAdapter simpleCursorAdapter;
     private int bnvMenu;
+    private CursorAdapterFactory cursorAdapterFactory;
+    private String[] columnName;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
-        CursorAdapterFactory cursorAdapterFactory = new CursorAdapterFactory();
-
-        simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(context,
-                CursorAdapterTypes.PRODUCTS);
+        cursorAdapterFactory = new CursorAdapterFactory();
     }
 
     @Override
@@ -77,18 +76,27 @@ public class RationFragment extends TemplateFragment implements ContractRational
     public void onResume() {
         super.onResume();
         tvHeading.setText(currentDate());
-
         bnv.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.pick_product:
+                    columnName = new String[]{_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_CALORIES,
+                            COLUMN_PRODUCT_PROTEINS, COLUMN_PRODUCT_FATS, COLUMN_PRODUCT_CARBOHYDRATES};
+                   /* simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(getContext(),
+                            CursorAdapterTypes.PRODUCTS);*/
                     bnvMenu = R.id.pick_product;
-                    menuItem.setChecked(true);
+                    //menuItem.setChecked(true);
                     getMenu().findItem(R.id.mi_sv_component).expandActionView();
                     getSvComponent().setQueryHint("Выберите продукт");
                     return true;
                 case R.id.clean_dish:
                     return true;
                 case R.id.pick_dish:
+                    columnName = new String[]{_ID, COLUMN_DISH_NAME, COLUMN_DISH_CALORIES,
+                            COLUMN_DISH_PROTEINS, COLUMN_DISH_FATS, COLUMN_DISH_CARBOHYDRATES};
+                    simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(getContext(),
+                            CursorAdapterTypes.DISHES);
+                    svComponent.setSuggestionsAdapter(simpleCursorAdapter);
+                    svComponent.setSuggestionsAdapter(simpleCursorAdapter);
                     bnvMenu = R.id.pick_dish;
                     getMenu().findItem(R.id.mi_sv_component).expandActionView();
                     getSvComponent().setQueryHint("Выберите блюдо");
@@ -116,6 +124,9 @@ public class RationFragment extends TemplateFragment implements ContractRational
         // Устанавливаем вспомогательную надпись в поле поиска.
         svComponent.setQueryHint("Выберите продукт");
 
+        simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(getContext(),
+                CursorAdapterTypes.PRODUCTS);
+
         svComponent.setSuggestionsAdapter(simpleCursorAdapter);
 
         // Устанавливаем максимальную ширину поля отображения вариантов поиска.
@@ -140,8 +151,6 @@ public class RationFragment extends TemplateFragment implements ContractRational
                         break;
                     default:
                 }
-
-
                 return false;
             }
         });
@@ -198,8 +207,6 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
     // Метод для получения курсора.
     private void setCursor() {
-        String[] columnName = {_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_CALORIES,
-                COLUMN_PRODUCT_PROTEINS, COLUMN_PRODUCT_FATS, COLUMN_PRODUCT_CARBOHYDRATES};
         cursor = new MatrixCursor(columnName);
     }
 

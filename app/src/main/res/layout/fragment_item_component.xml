@@ -66,11 +66,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/et_search_weight_product_component"
+                    android:layout_toLeftOf="@id/et_search_weight_component"
                     tools:text="Наименование продукта" />
 
                 <EditText
-                    android:id="@+id/et_search_weight_product_component"
+                    android:id="@+id/et_search_weight_component"
                     android:layout_width="54dp"
                     android:layout_height="36dp"
                     android:layout_alignParentRight="true"

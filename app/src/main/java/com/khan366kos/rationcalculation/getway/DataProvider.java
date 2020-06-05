@@ -2,6 +2,7 @@ package com.khan366kos.rationcalculation.getway;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
@@ -87,6 +88,7 @@ public class DataProvider {
 
     private void callAddProduct(String productName, String productCalories, String productProteins,
                                 String productFats, String productCarbohydrates) {
+
         productDbHelper.insertProduct(productName, productCalories, productProteins,
                 productFats, productCarbohydrates);
     }
@@ -264,7 +266,8 @@ public class DataProvider {
         if (cursor.moveToFirst()) {
             do {
                 try {
-                    arrayInputStream = new ByteArrayInputStream(cursor.getBlob(cursor.getColumnIndex(COLUMN_DISH_BLOB)));
+                    arrayInputStream = new ByteArrayInputStream(cursor.getBlob(cursor
+                            .getColumnIndex(COLUMN_DISH_BLOB)));
                     objectInputStream = new ObjectInputStream(arrayInputStream);
                     dish = (Dish) objectInputStream.readObject();
                     dishes.add(dish);

@@ -1,8 +1,12 @@
 package com.khan366kos.rationcalculation.presentation.Ration;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +17,8 @@ import com.khan366kos.rationcalculation.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 
 public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationViewHolder> {
 
@@ -32,6 +38,9 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
     @Override
     public void onBindViewHolder(@NonNull RationViewHolder holder, int position) {
+
+        holder.product = components.get(position);
+        Log.d(TAG, "onBindViewHolder: " + holder.product.getCaloriesCooked());
         holder.bind(components.get(position));
     }
 
@@ -56,6 +65,8 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         private TextView tvProteins;
         private TextView tvFats;
         private TextView tvCarbohydrates;
+        private EditText etWeight;
+        private Product product;
 
         public RationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,6 +75,29 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
             tvProteins = itemView.findViewById(R.id.tv_search_proteins_component);
             tvFats = itemView.findViewById(R.id.tv_search_fats_component);
             tvCarbohydrates = itemView.findViewById(R.id.tv_search_carbohydrates_component);
+            etWeight = itemView.findViewById(R.id.et_search_weight_component);
+
+            etWeight.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (charSequence.toString().length() > 0) {
+                        product.setWeight(Integer.parseInt(charSequence.toString()));
+                        tvCalories.setText(String.valueOf(product.getCalories()));
+                    } else {
+                        tvCalories.setText("0,0");
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
         }
 
         private void bind(Product product) {

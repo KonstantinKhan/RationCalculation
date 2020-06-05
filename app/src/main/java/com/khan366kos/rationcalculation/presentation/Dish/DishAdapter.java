@@ -147,7 +147,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProd
             tvProductCarbohydratesComponent =
                     itemView.findViewById(R.id.tv_search_carbohydrates_component);
             etProductWeightComponent =
-                    itemView.findViewById(R.id.et_search_weight_product_component);
+                    itemView.findViewById(R.id.et_search_weight_component);
             btnDeleteProductComponent =
                     itemView.findViewById(R.id.btn_delete_product_component);
             srl = itemView.findViewById(R.id.srl_item_component);

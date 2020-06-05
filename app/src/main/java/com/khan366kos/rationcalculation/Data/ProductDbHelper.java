@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -18,6 +19,7 @@ import java.io.ObjectOutputStream;
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_NAME;
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TABLE_DISHES;
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TABLE_PRODUCTS;
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 
 public class ProductDbHelper extends SQLiteOpenHelper {
 

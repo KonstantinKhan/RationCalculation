@@ -11,6 +11,9 @@ public class CursorAdapterFactory {
             case PRODUCTS:
                 toReturn = new CursorAdapterProduct(context);
                 break;
+            case DISHES:
+                toReturn = new CursorAdapterDish(context);
+                break;
             default:
         }
         return toReturn;

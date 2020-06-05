@@ -1,10 +1,14 @@
 package com.khan366kos.rationcalculation.Model;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 
 /**
  * Класс, описывающий конкретный продукт.
@@ -300,7 +304,6 @@ public class Product extends EnergyValue implements Serializable {
         } catch (NumberFormatException e) {
             result = 0;
         }
-
         return result;
     }
 
@@ -319,9 +322,13 @@ public class Product extends EnergyValue implements Serializable {
     }
 
     public void setNutrientsCooked() {
-        carbohydratesCooked = valuePer100(getCalories(), weightCooked);
-        proteinsCooked = valuePer100(getProteins(), weightCooked);
-        fatsCooked = valuePer100(getFats(), weightCooked);
-        carbohydratesCooked = valuePer100(getCarbohydrates(), weightCooked);
+        caloriesCooked = valuePer100(getCalories(), this.weightCooked);
+        caloriesDefault = caloriesCooked;
+        proteinsCooked = valuePer100(getProteins(), this.weightCooked);
+        proteinsDefault = proteinsCooked;
+        fatsCooked = valuePer100(getFats(), this.weightCooked);
+        fatsDefault = fatsCooked;
+        carbohydratesCooked = valuePer100(getCarbohydrates(), this.weightCooked);
+        carbohydratesDefault = carbohydratesCooked;
     }
 }
