@@ -27,10 +27,6 @@ public class Product extends EnergyValue implements Serializable {
     private String carbohydratesDefaultStr; // углеводы на 100 гр. в сыром виде
 
     private int weightCooked;
-    private double caloriesCooked; // калории на 100 гр. в готовом виде.
-    private double proteinsCooked; // белки на 100 гр. в готовом виде.
-    private double fatsCooked; // жиры на 100 гр. в готовом виде.
-    private double carbohydratesCooked; // углеводы на 100 гр. в готовом виде.
 
     private String caloriesCookedStr; // калории на 100 гр. в готовом виде.
     private String proteinsCookedStr; // белки на 100 гр. в готовом виде.
@@ -138,22 +134,6 @@ public class Product extends EnergyValue implements Serializable {
 
     public double getCarbohydratesPortion() {
         return carbohydratesPortion;
-    }
-
-    public double getCaloriesCooked() {
-        return caloriesCooked;
-    }
-
-    public double getProteinsCooked() {
-        return proteinsCooked;
-    }
-
-    public double getFatsCooked() {
-        return fatsCooked;
-    }
-
-    public double getCarbohydratesCooked() {
-        return carbohydratesCooked;
     }
 
     public String getCaloriesDefaultStr() {
@@ -322,13 +302,9 @@ public class Product extends EnergyValue implements Serializable {
     }
 
     public void setNutrientsCooked() {
-        caloriesCooked = valuePer100(getCalories(), this.weightCooked);
-        caloriesDefault = caloriesCooked;
-        proteinsCooked = valuePer100(getProteins(), this.weightCooked);
-        proteinsDefault = proteinsCooked;
-        fatsCooked = valuePer100(getFats(), this.weightCooked);
-        fatsDefault = fatsCooked;
-        carbohydratesCooked = valuePer100(getCarbohydrates(), this.weightCooked);
-        carbohydratesDefault = carbohydratesCooked;
+        caloriesDefault = valuePer100(getCalories(), this.weightCooked);
+        proteinsDefault = valuePer100(getProteins(), this.weightCooked);
+        fatsDefault = valuePer100(getFats(), this.weightCooked);
+        carbohydratesDefault = valuePer100(getCarbohydrates(), this.weightCooked);
     }
 }

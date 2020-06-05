@@ -81,10 +81,10 @@ public class RationFragment extends TemplateFragment implements ContractRational
                 case R.id.pick_product:
                     columnName = new String[]{_ID, COLUMN_PRODUCT_NAME, COLUMN_PRODUCT_CALORIES,
                             COLUMN_PRODUCT_PROTEINS, COLUMN_PRODUCT_FATS, COLUMN_PRODUCT_CARBOHYDRATES};
-                   /* simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(getContext(),
-                            CursorAdapterTypes.PRODUCTS);*/
+                    simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(getContext(),
+                            CursorAdapterTypes.PRODUCTS);
+                    svComponent.setSuggestionsAdapter(simpleCursorAdapter);
                     bnvMenu = R.id.pick_product;
-                    //menuItem.setChecked(true);
                     getMenu().findItem(R.id.mi_sv_component).expandActionView();
                     getSvComponent().setQueryHint("Выберите продукт");
                     return true;
@@ -95,7 +95,6 @@ public class RationFragment extends TemplateFragment implements ContractRational
                             COLUMN_DISH_PROTEINS, COLUMN_DISH_FATS, COLUMN_DISH_CARBOHYDRATES};
                     simpleCursorAdapter = cursorAdapterFactory.getCursorAdapter(getContext(),
                             CursorAdapterTypes.DISHES);
-                    svComponent.setSuggestionsAdapter(simpleCursorAdapter);
                     svComponent.setSuggestionsAdapter(simpleCursorAdapter);
                     bnvMenu = R.id.pick_dish;
                     getMenu().findItem(R.id.mi_sv_component).expandActionView();

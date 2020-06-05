@@ -118,10 +118,10 @@ public class ProductDbHelper extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put(ProductEntry.COLUMN_DISH_BLOB, byteArrayOutputStream.toByteArray());
             cv.put(ProductEntry.COLUMN_DISH_NAME, dish.getName());
-            cv.put(ProductEntry.COLUMN_DISH_CALORIES, dish.getCaloriesCooked());
-            cv.put(ProductEntry.COLUMN_DISH_PROTEINS, dish.getProteinsCooked());
-            cv.put(ProductEntry.COLUMN_DISH_FATS, dish.getFatsCooked());
-            cv.put(ProductEntry.COLUMN_DISH_CARBOHYDRATES, dish.getCarbohydratesCooked());
+            cv.put(ProductEntry.COLUMN_DISH_CALORIES, dish.getCaloriesDefault());
+            cv.put(ProductEntry.COLUMN_DISH_PROTEINS, dish.getProteinsDefault());
+            cv.put(ProductEntry.COLUMN_DISH_FATS, dish.getFatsDefault());
+            cv.put(ProductEntry.COLUMN_DISH_CARBOHYDRATES, dish.getCarbohydratesDefault());
             db.insertOrThrow(TABLE_DISHES, null, cv);
 
         } catch (IOException e) {

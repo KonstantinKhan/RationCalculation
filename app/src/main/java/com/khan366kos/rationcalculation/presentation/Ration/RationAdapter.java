@@ -38,9 +38,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
     @Override
     public void onBindViewHolder(@NonNull RationViewHolder holder, int position) {
-
         holder.product = components.get(position);
-        Log.d(TAG, "onBindViewHolder: " + holder.product.getCaloriesCooked());
         holder.bind(components.get(position));
     }
 
@@ -87,9 +85,15 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     if (charSequence.toString().length() > 0) {
                         product.setWeight(Integer.parseInt(charSequence.toString()));
-                        tvCalories.setText(String.valueOf(product.getCalories()));
+                        tvCalories.setText(String.valueOf(product.getCaloriesDefault()));
+                        tvProteins.setText(String.valueOf(product.getProteinsDefault()));
+                        tvFats.setText(String.valueOf(product.getFatsDefault()));
+                        tvCarbohydrates.setText(String.valueOf(product.getCarbohydratesDefault()));
                     } else {
                         tvCalories.setText("0,0");
+                        tvProteins.setText("0,0");
+                        tvFats.setText("0,0");
+                        tvCarbohydrates.setText("0,0");
                     }
                 }
 
