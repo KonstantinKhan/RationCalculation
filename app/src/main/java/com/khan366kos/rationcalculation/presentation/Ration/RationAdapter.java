@@ -26,7 +26,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
     @Override
     public RationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item_dish, parent, false);
+                .inflate(R.layout.fragment_item_component, parent, false);
         return new RationViewHolder(view);
     }
 
@@ -52,15 +52,27 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
     public class RationViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvName;
+        private TextView tvCalories;
+        private TextView tvProteins;
+        private TextView tvFats;
+        private TextView tvCarbohydrates;
 
         public RationViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            tvName = itemView.findViewById(R.id.tv_search_dish_name);
+            tvName = itemView.findViewById(R.id.tv_search_name_component);
+            tvCalories = itemView.findViewById(R.id.tv_search_calories_component);
+            tvProteins = itemView.findViewById(R.id.tv_search_proteins_component);
+            tvFats = itemView.findViewById(R.id.tv_search_fats_component);
+            tvCarbohydrates = itemView.findViewById(R.id.tv_search_carbohydrates_component);
         }
 
         private void bind(Product product) {
             tvName.setText(product.getName());
+            tvCalories.setText(String.valueOf(product.getCalories()));
+            tvProteins.setText(String.valueOf(product.getProteins()));
+            tvFats.setText(String.valueOf(product.getFats()));
+            tvCarbohydrates.setText(String.valueOf(product.getCarbohydrates()));
         }
     }
 }
+

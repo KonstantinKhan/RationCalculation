@@ -4,7 +4,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +23,6 @@ import com.khan366kos.rationcalculation.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
-
 public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProductViewHolder> {
 
     private Dish dish; // Создаваемое блюдо
@@ -41,7 +38,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProd
     @Override
     public SuggestionProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item_product_component, parent, false);
+                .inflate(R.layout.fragment_item_component, parent, false);
         return new SuggestionProductViewHolder(view);
     }
 
@@ -140,15 +137,15 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProd
             super(itemView);
 
             // Инициализируем View.
-            tvProductNameComponent = itemView.findViewById(R.id.tv_search_product_name_component);
+            tvProductNameComponent = itemView.findViewById(R.id.tv_search_name_component);
             tvProductCaloriesComponent =
-                    itemView.findViewById(R.id.tv_search_product_calories_component);
+                    itemView.findViewById(R.id.tv_search_calories_component);
             tvProductProteinsComponent =
-                    itemView.findViewById(R.id.tv_search_product_proteins_component);
+                    itemView.findViewById(R.id.tv_search_proteins_component);
             tvProductFatsComponent =
-                    itemView.findViewById(R.id.tv_search_product_fats_component);
+                    itemView.findViewById(R.id.tv_search_fats_component);
             tvProductCarbohydratesComponent =
-                    itemView.findViewById(R.id.tv_search_product_carbohydrates_component);
+                    itemView.findViewById(R.id.tv_search_carbohydrates_component);
             etProductWeightComponent =
                     itemView.findViewById(R.id.et_search_weight_product_component);
             btnDeleteProductComponent =
