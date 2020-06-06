@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.R;
+import com.khan366kos.rationcalculation.presentation.Dish.DishAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,11 @@ import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationViewHolder> {
 
     private List<Product> components;
+    private RationAdapter.OnMove onMove;
 
-    public RationAdapter() {
+    public RationAdapter(RationAdapter.OnMove onMove) {
         components = new ArrayList<>();
+        this.onMove = onMove;
     }
 
     @NonNull
@@ -50,6 +53,10 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
     public void setComponents(List<Product> components) {
         this.components = components;
         notifyDataSetChanged();
+    }
+
+    public interface OnMove {
+        void onSetWeightComponent();
     }
 
     public List<Product> getComponents() {
@@ -85,16 +92,14 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     if (charSequence.toString().length() > 0) {
                         product.setWeight(Integer.parseInt(charSequence.toString()));
-                        tvCalories.setText(String.valueOf(product.getCaloriesDefault()));
-                        tvProteins.setText(String.valueOf(product.getProteinsDefault()));
-                        tvFats.setText(String.valueOf(product.getFatsDefault()));
-                        tvCarbohydrates.setText(String.valueOf(product.getCarbohydratesDefault()));
                     } else {
-                        tvCalories.setText("0,0");
-                        tvProteins.setText("0,0");
-                        tvFats.setText("0,0");
-                        tvCarbohydrates.setText("0,0");
+                        product.setWeight(0);
                     }
+                    tvCalories.setText(String.valueOf(product.getCalories()));
+                    tvProteins.setText(String.valueOf(product.getProteins()));
+                    tvFats.setText(String.valueOf(product.getFats()));
+                    tvCarbohydrates.setText(String.valueOf(product.getCarbohydrates()));
+                    onMove.onSetWeightComponent();
                 }
 
                 @Override

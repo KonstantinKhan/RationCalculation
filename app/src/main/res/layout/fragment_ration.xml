@@ -37,27 +37,27 @@
             android:text="У, г." />
 
         <TextView
-            android:id="@+id/tv_dish_weight_small"
+            android:id="@+id/tv_rational_weight_small"
             style="@style/TextViewParameters"
             android:text="-" />
 
         <TextView
-            android:id="@+id/tv_dish_calories_small"
+            android:id="@+id/tv_ration_calories_small"
             style="@style/TextViewParameters"
             android:text="-" />
 
         <TextView
-            android:id="@+id/tv_dish_proteins_small"
+            android:id="@+id/tv_ration_proteins_small"
             style="@style/TextViewParameters"
             android:text="-" />
 
         <TextView
-            android:id="@+id/tv_dish_fats_small"
+            android:id="@+id/tv_ration_fats_small"
             style="@style/TextViewParameters"
             android:text="-" />
 
         <TextView
-            android:id="@+id/tv_dish_carbohydrates_small"
+            android:id="@+id/tv_ration_carbohydrates_small"
             style="@style/TextViewParameters"
             android:text="-" />
 

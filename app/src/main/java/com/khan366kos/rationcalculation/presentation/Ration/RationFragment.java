@@ -26,12 +26,15 @@ import com.khan366kos.rationcalculation.R;
 import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterFactory;
 import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterTypes;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.*;
+import static java.math.BigDecimal.*;
 
 public class RationFragment extends TemplateFragment implements ContractRational.RationView {
 
@@ -48,6 +51,11 @@ public class RationFragment extends TemplateFragment implements ContractRational
     private int bnvMenu;
     private CursorAdapterFactory cursorAdapterFactory;
     private String[] columnName;
+    private TextView tvWeightRation;
+    private TextView tvCaloriesRation;
+    private TextView tvProteinsRation;
+    private TextView tvFatsRation;
+    private TextView tvCarbohydratesRation;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -59,7 +67,14 @@ public class RationFragment extends TemplateFragment implements ContractRational
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        adapter = new RationAdapter();
+        adapter = new RationAdapter(() -> {
+            double[] nutrientsRation = setNutrientsRation();
+            tvWeightRation.setText(String.valueOf(nutrientsRation[0]).replace(".", ","));
+            tvCaloriesRation.setText(String.valueOf(nutrientsRation[1]).replace(".", ","));
+            tvProteinsRation.setText(String.valueOf(nutrientsRation[2]).replace(".", ","));
+            tvFatsRation.setText(String.valueOf(nutrientsRation[3]).replace(".", ","));
+            tvCarbohydratesRation.setText(String.valueOf(nutrientsRation[4]).replace(".", ","));
+        });
         presenter = new RationPresenter(this);
     }
 
@@ -194,6 +209,11 @@ public class RationFragment extends TemplateFragment implements ContractRational
         tvHeading = getActivity().findViewById(R.id.tv_heading);
         bnv = view.findViewById(R.id.bottom_menu);
         recyclerView = view.findViewById(R.id.rl_ration_component);
+        tvWeightRation = view.findViewById(R.id.tv_rational_weight_small);
+        tvCaloriesRation = view.findViewById(R.id.tv_ration_calories_small);
+        tvProteinsRation = view.findViewById(R.id.tv_ration_proteins_small);
+        tvFatsRation = view.findViewById(R.id.tv_ration_fats_small);
+        tvCarbohydratesRation = view.findViewById(R.id.tv_ration_carbohydrates_small);
     }
 
     // Метод для получеия текущей даты в виде строики в заданном формате "02 янв. 2020 г."
@@ -232,5 +252,29 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
         // Обновляем курсор.
         simpleCursorAdapter.changeCursor(cursor);
+    }
+
+    private double[] setNutrientsRation() {
+        double[] nutrients = new double[5];
+
+        if (adapter.getComponents().size() != 0) {
+            for (Product product : adapter.getComponents()) {
+                nutrients[0] = nutrients[0] + product.getWeight();
+                nutrients[1] = nutrients[1] + product.getCalories();
+                nutrients[2] = nutrients[2] + product.getProteins();
+                nutrients[3] = nutrients[3] + product.getFats();
+                nutrients[4] = nutrients[4] + product.getCarbohydrates();
+            }
+
+            nutrients[0] = valueOf(nutrients[0]).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+            nutrients[1] = valueOf(nutrients[1]).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+            nutrients[2] = valueOf(nutrients[2]).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+            nutrients[3] = valueOf(nutrients[3]).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+            nutrients[4] = valueOf(nutrients[4]).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+        }
+
+        Log.d(TAG, "setNutrientsRation: " + nutrients[0]);
+
+        return nutrients;
     }
 }
