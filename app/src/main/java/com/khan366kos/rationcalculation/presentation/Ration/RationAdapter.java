@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.R;
-import com.khan366kos.rationcalculation.presentation.Dish.DishAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,10 +94,10 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                     } else {
                         product.setWeight(0);
                     }
-                    tvCalories.setText(String.valueOf(product.getCalories()));
-                    tvProteins.setText(String.valueOf(product.getProteins()));
-                    tvFats.setText(String.valueOf(product.getFats()));
-                    tvCarbohydrates.setText(String.valueOf(product.getCarbohydrates()));
+                    tvCalories.setText(String.valueOf(product.getCalories()).replace(".", ","));
+                    tvProteins.setText(String.valueOf(product.getProteins()).replace(".", ","));
+                    tvFats.setText(String.valueOf(product.getFats()).replace(".", ","));
+                    tvCarbohydrates.setText(String.valueOf(product.getCarbohydrates()).replace(".", ","));
                     onMove.onSetWeightComponent();
                 }
 
@@ -111,10 +110,10 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
         private void bind(Product product) {
             tvName.setText(product.getName());
-            tvCalories.setText(String.valueOf(product.getCalories()));
-            tvProteins.setText(String.valueOf(product.getProteins()));
-            tvFats.setText(String.valueOf(product.getFats()));
-            tvCarbohydrates.setText(String.valueOf(product.getCarbohydrates()));
+            tvCalories.setText(String.valueOf(product.getCalories()).replace(".", ","));
+            tvProteins.setText(String.valueOf(product.getProteins()).replace(".", ","));
+            tvFats.setText(String.valueOf(product.getFats()).replace(".", ","));
+            tvCarbohydrates.setText(String.valueOf(product.getCarbohydrates()).replace(".", ","));
         }
     }
 }

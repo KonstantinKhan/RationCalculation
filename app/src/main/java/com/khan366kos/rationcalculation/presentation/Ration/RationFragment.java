@@ -272,9 +272,6 @@ public class RationFragment extends TemplateFragment implements ContractRational
             nutrients[3] = valueOf(nutrients[3]).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
             nutrients[4] = valueOf(nutrients[4]).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
         }
-
-        Log.d(TAG, "setNutrientsRation: " + nutrients[0]);
-
         return nutrients;
     }
 }
