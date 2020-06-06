@@ -13,20 +13,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.khan366kos.rationcalculation.Model.Product;
+import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TAG;
 
 public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationViewHolder> {
 
-    private List<Product> components;
+    private Ration ration;
     private RationAdapter.OnMove onMove;
 
-    public RationAdapter(RationAdapter.OnMove onMove) {
-        components = new ArrayList<>();
+    public RationAdapter(RationAdapter.OnMove onMove, Ration ration) {
+        this.ration = ration;
+        Log.d(TAG, "RationAdapter: " + ration);
         this.onMove = onMove;
     }
 
@@ -40,17 +41,17 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
     @Override
     public void onBindViewHolder(@NonNull RationViewHolder holder, int position) {
-        holder.product = components.get(position);
-        holder.bind(components.get(position));
+        holder.product = ration.getComposition().get(position);
+        holder.bind(ration.getComposition().get(position));
     }
 
     @Override
     public int getItemCount() {
-        return components.size();
+        return ration.getComposition().size();
     }
 
     public void setComponents(List<Product> components) {
-        this.components = components;
+        ration.setComposition(components);
         notifyDataSetChanged();
     }
 
@@ -59,7 +60,11 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
     }
 
     public List<Product> getComponents() {
-        return components;
+        return ration.getComposition();
+    }
+
+    public Ration getRation() {
+        return ration;
     }
 
     public class RationViewHolder extends RecyclerView.ViewHolder {

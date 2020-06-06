@@ -6,7 +6,7 @@ import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 import com.khan366kos.rationcalculation.R;
 
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.*;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.*;
 
 public class CursorAdapterDish extends SimpleCursorAdapter {
     public CursorAdapterDish(Context context) {

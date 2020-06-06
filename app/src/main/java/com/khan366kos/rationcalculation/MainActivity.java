@@ -2,7 +2,6 @@ package com.khan366kos.rationcalculation;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,8 +22,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
-
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

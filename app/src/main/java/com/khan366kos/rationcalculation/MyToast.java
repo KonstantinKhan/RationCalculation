@@ -1,12 +1,9 @@
 package com.khan366kos.rationcalculation;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 
 public class MyToast {
 

@@ -1,14 +1,10 @@
 package com.khan366kos.rationcalculation.Model;
 
-import android.util.Log;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 
 /**
  * Класс, описывающий конкретный продукт.

@@ -6,11 +6,11 @@ import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 import com.khan366kos.rationcalculation.R;
 
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_CALORIES;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_CARBOHYDRATES;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_FATS;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_NAME;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_PROTEINS;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.COLUMN_PRODUCT_CALORIES;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.COLUMN_PRODUCT_CARBOHYDRATES;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.COLUMN_PRODUCT_FATS;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.COLUMN_PRODUCT_NAME;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.COLUMN_PRODUCT_PROTEINS;
 
 public class CursorAdapterProduct extends SimpleCursorAdapter {
     public CursorAdapterProduct(Context context) {

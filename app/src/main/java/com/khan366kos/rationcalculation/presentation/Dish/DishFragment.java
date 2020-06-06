@@ -6,7 +6,6 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +37,7 @@ import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterTy
 
 import java.util.List;
 
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.*;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.*;
 
 public class DishFragment extends Fragment implements ContractDishFragment.DishView {
 

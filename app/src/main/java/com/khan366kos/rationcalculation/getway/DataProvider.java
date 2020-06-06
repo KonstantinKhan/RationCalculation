@@ -2,12 +2,12 @@ package com.khan366kos.rationcalculation.getway;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Data.ProductDbHelper;
-import com.khan366kos.rationcalculation.ProductContract;
+import com.khan366kos.rationcalculation.Data.ProductContract;
+import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.RationCalculationApp;
 
 import java.io.ByteArrayInputStream;
@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.*;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.*;
 
 public class DataProvider {
 
@@ -84,6 +84,10 @@ public class DataProvider {
 
     public Observable<List<Dish>> getAllDishes() {
         return Observable.fromCallable(this::callGetAllDishes);
+    }
+
+    public Observable<Ration> getQueryRation(String date) {
+        return Observable.fromCallable(() -> callQueryRation(date));
     }
 
     private void callAddProduct(String productName, String productCalories, String productProteins,
@@ -320,5 +324,36 @@ public class DataProvider {
         cursor.close();
 
         return queryProduct;
+    }
+
+    private Ration callQueryRation(String date) {
+        productDbHelper.setDb();
+        Ration ration = null;
+
+        ByteArrayInputStream arrayInputStream;
+        ObjectInputStream objectInputStream;
+
+        Cursor cursor = productDbHelper.getDb().query(TABLE_DISHES,
+                null,
+                COLUMN_RATION_DATE + " = ?",
+                new String[]{date},
+                null,
+                null,
+                null);
+
+        cursor.moveToFirst();
+
+        try {
+            arrayInputStream = new ByteArrayInputStream(cursor.getBlob(cursor
+                    .getColumnIndex(COLUMN_RATION_BLOB)));
+            objectInputStream = new ObjectInputStream(arrayInputStream);
+            ration = (Ration) objectInputStream.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        cursor.close();
+        return ration;
     }
 }

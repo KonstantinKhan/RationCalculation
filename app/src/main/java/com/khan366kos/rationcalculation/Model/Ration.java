@@ -16,9 +16,11 @@ public class Ration {
     private double carbohydratesLimit; // Лимит углеводов дневного рациона.
     private double carbohydratesRation; // Фактическое количество углеводов дневного рациона.
     private List<Product> composition; // состав рациона.
+    private String data; // Дата рациона.
 
 
     public Ration() {
+        composition = new ArrayList<>();
     }
 
     public Ration(double caloriesLimit, double proteinsLimit, double fatsLimit, double carbohydratesLimit) {
@@ -124,5 +126,17 @@ public class Ration {
 
     public double getCarbohydratesRation() {
         return carbohydratesRation;
+    }
+
+    public void setComposition(List<Product> composition) {
+        this.composition = composition;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public String getData() {
+        return data;
     }
 }

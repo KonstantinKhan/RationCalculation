@@ -1,4 +1,4 @@
-package com.khan366kos.rationcalculation;
+package com.khan366kos.rationcalculation.Data;
 
 import android.provider.BaseColumns;
 
@@ -24,6 +24,10 @@ public final class ProductContract {
         public final static String COLUMN_DISH_FATS = "dishFats";
         public final static String COLUMN_DISH_CARBOHYDRATES = "dishCarbohydrates";
         public final static String COLUMN_DISH_BLOB = "dishBlob";
+
+        public final static String TABLE_RATIONS = "rations";
+        public final static String COLUMN_RATION_DATE = "date";
+        public final static String COLUMN_RATION_BLOB = "rationBlob";
 
         public final static String TAG = "MyLog";
     }

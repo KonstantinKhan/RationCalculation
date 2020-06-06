@@ -2,7 +2,6 @@ package com.khan366kos.rationcalculation.presentation.ProductsBase;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +17,6 @@ import androidx.fragment.app.DialogFragment;
 import com.khan366kos.rationcalculation.CheckContentET;
 import com.khan366kos.rationcalculation.MyToast;
 import com.khan366kos.rationcalculation.R;
-
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
 
 public class DialogFragmentAddProduct extends DialogFragment {
 

@@ -5,21 +5,20 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.khan366kos.rationcalculation.Model.Dish;
-import com.khan366kos.rationcalculation.ProductContract.ProductEntry;
+import com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry;
+import com.khan366kos.rationcalculation.Model.Ration;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.COLUMN_PRODUCT_NAME;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TABLE_DISHES;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TABLE_PRODUCTS;
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.TAG;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.COLUMN_PRODUCT_NAME;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TABLE_DISHES;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TABLE_PRODUCTS;
 
 public class ProductDbHelper extends SQLiteOpenHelper {
 
@@ -71,6 +70,14 @@ public class ProductDbHelper extends SQLiteOpenHelper {
                 + ProductEntry.COLUMN_DISH_BLOB + " BLOB NOT NULL) ;";
 
         db.execSQL(SQL_CREATE_DISHES_TABLE);
+
+        // Строка для создания таблцы для хранения рационов
+        String SQL_CREATE_RATIONS_TABLE = "CREATE TABLE " + ProductEntry.TABLE_RATIONS + " ("
+                + ProductEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, "
+                + ProductEntry.COLUMN_RATION_DATE + " TEXT NOT NULL UNIQUE, "
+                + ProductEntry.COLUMN_RATION_BLOB + " BLOB NOT NULL) ;";
+
+        db.execSQL(SQL_CREATE_RATIONS_TABLE);
     }
 
     @Override
@@ -124,6 +131,23 @@ public class ProductDbHelper extends SQLiteOpenHelper {
             cv.put(ProductEntry.COLUMN_DISH_CARBOHYDRATES, dish.getCarbohydratesDefault());
             db.insertOrThrow(TABLE_DISHES, null, cv);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertRation(Ration ration) {
+        ByteArrayOutputStream byteArrayOutputStream =
+                new ByteArrayOutputStream();
+        ObjectOutputStream outputStream;
+        try {
+            outputStream = new ObjectOutputStream(byteArrayOutputStream);
+            outputStream.writeObject(ration);
+            outputStream.close();
+
+            ContentValues cv = new ContentValues();
+            cv.put(ProductEntry.COLUMN_RATION_DATE, ration.getData());
+            cv.put(ProductEntry.COLUMN_RATION_BLOB, byteArrayOutputStream.toByteArray());
         } catch (IOException e) {
             e.printStackTrace();
         }

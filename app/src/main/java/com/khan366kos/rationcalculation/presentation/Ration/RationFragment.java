@@ -22,18 +22,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.khan366kos.rationcalculation.Fragments.TemplateFragment;
 import com.khan366kos.rationcalculation.Model.Product;
+import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
 import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterFactory;
 import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterTypes;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.khan366kos.rationcalculation.ProductContract.ProductEntry.*;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.*;
 import static java.math.BigDecimal.*;
 
 public class RationFragment extends TemplateFragment implements ContractRational.RationView {
@@ -56,6 +56,8 @@ public class RationFragment extends TemplateFragment implements ContractRational
     private TextView tvProteinsRation;
     private TextView tvFatsRation;
     private TextView tvCarbohydratesRation;
+    private Ration ration;
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -67,15 +69,8 @@ public class RationFragment extends TemplateFragment implements ContractRational
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        adapter = new RationAdapter(() -> {
-            double[] nutrientsRation = setNutrientsRation();
-            tvWeightRation.setText(String.valueOf(nutrientsRation[0]).replace(".", ","));
-            tvCaloriesRation.setText(String.valueOf(nutrientsRation[1]).replace(".", ","));
-            tvProteinsRation.setText(String.valueOf(nutrientsRation[2]).replace(".", ","));
-            tvFatsRation.setText(String.valueOf(nutrientsRation[3]).replace(".", ","));
-            tvCarbohydratesRation.setText(String.valueOf(nutrientsRation[4]).replace(".", ","));
-        });
         presenter = new RationPresenter(this);
+        presenter.onShowRation(currentDate());
     }
 
     @Nullable
@@ -273,5 +268,21 @@ public class RationFragment extends TemplateFragment implements ContractRational
             nutrients[4] = valueOf(nutrients[4]).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
         }
         return nutrients;
+    }
+
+    private void onSetWeightComponent() {
+        double[] nutrientsRation = RationFragment.this.setNutrientsRation();
+        tvWeightRation.setText(String.valueOf(nutrientsRation[0]).replace(".", ","));
+        tvCaloriesRation.setText(String.valueOf(nutrientsRation[1]).replace(".", ","));
+        tvProteinsRation.setText(String.valueOf(nutrientsRation[2]).replace(".", ","));
+        tvFatsRation.setText(String.valueOf(nutrientsRation[3]).replace(".", ","));
+        tvCarbohydratesRation.setText(String.valueOf(nutrientsRation[4]).replace(".", ","));
+    }
+
+    @Override
+    public void setRation(Ration ration) {
+        this.ration = ration;
+        adapter = new RationAdapter(this::onSetWeightComponent, ration);
+        adapter.getRation().setData(currentDate());
     }
 }
