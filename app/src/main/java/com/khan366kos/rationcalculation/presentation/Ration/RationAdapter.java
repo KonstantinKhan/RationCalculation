@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
@@ -87,6 +88,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         private ImageButton btnDelete;
         private ImageButton btnEdit;
         private int position;
+        private SwipeRevealLayout srl;
 
         public RationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -98,6 +100,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
             etWeight = itemView.findViewById(R.id.et_search_weight_component);
             btnDelete = itemView.findViewById(R.id.btn_delete_component);
             btnEdit = itemView.findViewById(R.id.btn_edit_component);
+            srl = itemView.findViewById(R.id.srl_item_component);
 
             etWeight.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -129,6 +132,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                 ration.remove(product);
                 onMove.onClickBtnDelete();
                 notifyItemRemoved(position);
+                srl.close(false);
             });
             
             btnEdit.setOnClickListener(view -> {
