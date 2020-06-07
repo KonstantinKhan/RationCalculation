@@ -1,5 +1,6 @@
 package com.khan366kos.rationcalculation.presentation.Ration;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,7 +31,9 @@ import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterTy
 
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,7 +48,6 @@ public class RationFragment extends TemplateFragment implements ContractRational
     private RationAdapter adapter;
     private RationPresenter presenter;
     private SearchView svComponent;
-    private Menu menu;
     private MenuItem menuItemSvComponent;
     private MatrixCursor cursor;
     private SimpleCursorAdapter simpleCursorAdapter;
@@ -56,13 +59,13 @@ public class RationFragment extends TemplateFragment implements ContractRational
     private TextView tvProteinsRation;
     private TextView tvFatsRation;
     private TextView tvCarbohydratesRation;
-    private Ration ration;
-
+    private DatePickerDialog datePickerDialog;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         cursorAdapterFactory = new CursorAdapterFactory();
+        datePickerDialog = new DatePickerDialog(getContext());
     }
 
     @Override
@@ -86,6 +89,21 @@ public class RationFragment extends TemplateFragment implements ContractRational
     public void onResume() {
         super.onResume();
         tvHeading.setText(currentDate());
+
+        tvHeading.setOnClickListener(view -> {
+            datePickerDialog.show();
+        });
+
+        datePickerDialog.setOnDateSetListener((datePicker, i, i1, i2) -> {
+            Calendar calendar = new GregorianCalendar(i, i1, i2);
+            Locale locale = new Locale("ru", "RU");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", locale);
+            Date date = calendar.getTime();
+            String dateStr = simpleDateFormat.format(date) + "г.";
+            tvHeading.setText(dateStr);
+            presenter.onShowRation(dateStr);
+        });
+
         bnv.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.pick_product:
@@ -122,8 +140,6 @@ public class RationFragment extends TemplateFragment implements ContractRational
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
-
-        this.menu = menu;
 
         menuItemSvComponent = menu.findItem(R.id.mi_sv_component);
         svComponent = (SearchView) menuItemSvComponent.getActionView();
@@ -212,12 +228,12 @@ public class RationFragment extends TemplateFragment implements ContractRational
         tvCarbohydratesRation = view.findViewById(R.id.tv_ration_carbohydrates_small);
     }
 
-    // Метод для получеия текущей даты в виде строики в заданном формате "02 янв. 2020 г."
+    // Метод для получения текущей даты в виде строики в заданном формате "02 янв. 2020 г."
     private String currentDate() {
         Date date = new Date();
         Locale locale = new Locale("ru", "RU");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", locale);
-        return simpleDateFormat.format(date) + " г." + " (Сегодня) ";
+        return simpleDateFormat.format(date) + "г.";
     }
 
     // Метод для получения курсора.
@@ -284,7 +300,6 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
     @Override
     public void setRation(Ration ration) {
-        this.ration = ration;
         adapter = new RationAdapter(this::onSetWeightComponent, ration);
         adapter.getRation().setData(currentDate());
         recyclerView.setAdapter(adapter);
