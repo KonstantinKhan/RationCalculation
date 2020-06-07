@@ -1,12 +1,17 @@
 package com.khan366kos.rationcalculation.Model;
 
+import android.util.Log;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TAG;
 
 /**
  * Класс, описыващий дневной рацион
  */
-public class Ration {
+public class Ration implements Serializable {
     private double caloriesLimit; // Лимит калорий дневного рациона.
     private double caloriesRation; // Фактическое количество калорий дневного рациона.
     private double proteinsLimit; // Лимит белков дневного рацона.

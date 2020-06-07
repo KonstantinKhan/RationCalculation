@@ -20,5 +20,7 @@ public interface ContractRational {
         void onQueryTextChangeDish(String newText, List<Product> components);
 
         void onShowRation(String date);
+
+        void onSuggestionClick(Ration ration);
     }
 }

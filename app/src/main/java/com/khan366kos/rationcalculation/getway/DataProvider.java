@@ -2,6 +2,8 @@ package com.khan366kos.rationcalculation.getway;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
+import android.util.Log;
 
 import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
@@ -11,8 +13,10 @@ import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.RationCalculationApp;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,6 +92,20 @@ public class DataProvider {
 
     public Observable<Ration> getQueryRation(String date) {
         return Observable.fromCallable(() -> callQueryRation(date));
+    }
+
+    public Observable<Void> saveRation(Ration ration) {
+        return Observable.fromCallable(() -> {
+            callInsertRation(ration);
+            return null;
+        });
+    }
+
+    public Observable<Void> updateRation(Ration ration) {
+        return Observable.fromCallable(() -> {
+            callUpdateRation(ration);
+            return null;
+        });
     }
 
     private void callAddProduct(String productName, String productCalories, String productProteins,
@@ -333,13 +351,24 @@ public class DataProvider {
         ByteArrayInputStream arrayInputStream;
         ObjectInputStream objectInputStream;
 
-        Cursor cursor = productDbHelper.getDb().query(TABLE_DISHES,
+        /*Cursor cursor = productDbHelper.getDb().query(TABLE_RATIONS,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);*/
+
+        //Log.d(TAG, "callQueryRation: " + cursor.getCount());
+
+        Cursor cursor = productDbHelper.getDb().query(TABLE_RATIONS,
                 null,
                 COLUMN_RATION_DATE + " = ?",
                 new String[]{date},
                 null,
                 null,
                 null);
+
 
         cursor.moveToFirst();
 
@@ -354,6 +383,20 @@ public class DataProvider {
             e.printStackTrace();
         }
         cursor.close();
+
         return ration;
+    }
+
+    private void callInsertRation(Ration ration) {
+        productDbHelper.setDb();
+        try {
+            productDbHelper.insertRation(ration);
+        } catch (SQLiteConstraintException e) {
+            productDbHelper.updateRation(ration);
+        }
+    }
+
+    private void callUpdateRation(Ration ration) {
+        productDbHelper.setDb();
     }
 }

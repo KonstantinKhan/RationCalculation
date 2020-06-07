@@ -27,7 +27,6 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
     public RationAdapter(RationAdapter.OnMove onMove, Ration ration) {
         this.ration = ration;
-        Log.d(TAG, "RationAdapter: " + ration);
         this.onMove = onMove;
     }
 
@@ -43,6 +42,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
     public void onBindViewHolder(@NonNull RationViewHolder holder, int position) {
         holder.product = ration.getComposition().get(position);
         holder.bind(ration.getComposition().get(position));
+        holder.etWeight.setText(String.valueOf(ration.getComposition().get(position).getWeight()));
     }
 
     @Override

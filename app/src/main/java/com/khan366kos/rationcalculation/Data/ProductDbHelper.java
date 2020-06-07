@@ -3,8 +3,10 @@ package com.khan366kos.rationcalculation.Data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -16,9 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.COLUMN_PRODUCT_NAME;
-import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TABLE_DISHES;
-import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TABLE_PRODUCTS;
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.*;
 
 public class ProductDbHelper extends SQLiteOpenHelper {
 
@@ -148,9 +148,17 @@ public class ProductDbHelper extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put(ProductEntry.COLUMN_RATION_DATE, ration.getData());
             cv.put(ProductEntry.COLUMN_RATION_BLOB, byteArrayOutputStream.toByteArray());
+            Log.d(TAG, "insertRation: " + cv);
+            db.insertOrThrow(TABLE_RATIONS, null, cv);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        setCursor(TABLE_RATIONS);
+
+        Log.d(TAG, "insertRation: " + cursor.getCount());
+        cursor.close();
+
     }
 
     public Cursor getCursor() {
@@ -176,5 +184,28 @@ public class ProductDbHelper extends SQLiteOpenHelper {
 
     public void deleteProduct(String name) {
         db.delete(TABLE_PRODUCTS, COLUMN_PRODUCT_NAME + " = '" + name + "'", null);
+    }
+
+    public void updateRation(Ration ration) {
+        setDb();
+        ByteArrayOutputStream byteArrayOutputStream =
+                new ByteArrayOutputStream();
+        ObjectOutputStream outputStream;
+        try {
+            outputStream = new ObjectOutputStream(byteArrayOutputStream);
+            outputStream.writeObject(ration);
+            outputStream.close();
+
+            ContentValues cv = new ContentValues();
+            cv.put(ProductContract.ProductEntry.COLUMN_RATION_DATE, ration.getData());
+            cv.put(ProductContract.ProductEntry.COLUMN_RATION_BLOB, byteArrayOutputStream.toByteArray());
+
+            db.update(TABLE_RATIONS,
+                    cv,
+                    COLUMN_RATION_DATE + " = ?",
+                    new String[]{String.valueOf(ration.getData())});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

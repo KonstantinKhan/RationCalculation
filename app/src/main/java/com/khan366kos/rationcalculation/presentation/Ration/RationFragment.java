@@ -115,10 +115,8 @@ public class RationFragment extends TemplateFragment implements ContractRational
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(null);
 
-        presenter.onBindViewHolder();
+        Log.d(TAG, "onResume: А здесь начнем записывать рацион в базу данных");
     }
 
     @Override
@@ -185,7 +183,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
                         Double.parseDouble(cursor.getString(5).replace(",", ".")));
 
                 // Добавляем продукт в рацион.
-                adapter.getComponents().add(product);
+                adapter.getRation().addProduct(product);
 
                 // Прокручивает RecyclerView до добавленного компонента.
                 recyclerView.smoothScrollToPosition(adapter.getComponents().size() - 1);
@@ -194,6 +192,9 @@ public class RationFragment extends TemplateFragment implements ContractRational
                 svComponent.setQuery("", false);
 
                 adapter.notifyItemInserted(i);
+
+                presenter.onSuggestionClick(adapter.getRation());
+
                 cursor.close();
                 return true;
             }
@@ -277,6 +278,8 @@ public class RationFragment extends TemplateFragment implements ContractRational
         tvProteinsRation.setText(String.valueOf(nutrientsRation[2]).replace(".", ","));
         tvFatsRation.setText(String.valueOf(nutrientsRation[3]).replace(".", ","));
         tvCarbohydratesRation.setText(String.valueOf(nutrientsRation[4]).replace(".", ","));
+
+        presenter.onSuggestionClick(adapter.getRation());
     }
 
     @Override
@@ -284,5 +287,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
         this.ration = ration;
         adapter = new RationAdapter(this::onSetWeightComponent, ration);
         adapter.getRation().setData(currentDate());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(null);
     }
 }

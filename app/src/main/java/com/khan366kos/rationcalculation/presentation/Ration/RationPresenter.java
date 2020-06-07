@@ -47,7 +47,6 @@ public class RationPresenter implements ContractRational.RationPresenter {
 
     @Override
     public void onShowRation(String date) {
-        Log.d(TAG, "onShowRation: ");
         dataProvider.getQueryRation(date)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -61,5 +60,10 @@ public class RationPresenter implements ContractRational.RationPresenter {
                         });
     }
 
-
+    @Override
+    public void onSuggestionClick(Ration ration) {
+        dataProvider.saveRation(ration)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe();
+    }
 }
