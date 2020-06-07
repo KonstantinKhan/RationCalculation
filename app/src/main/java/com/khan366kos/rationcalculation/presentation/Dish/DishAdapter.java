@@ -149,7 +149,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProd
             etProductWeightComponent =
                     itemView.findViewById(R.id.et_search_weight_component);
             btnDeleteProductComponent =
-                    itemView.findViewById(R.id.btn_delete_product_component);
+                    itemView.findViewById(R.id.btn_delete_component);
             srl = itemView.findViewById(R.id.srl_item_component);
 
             colorFill = etProductWeightComponent.getBackgroundTintList();

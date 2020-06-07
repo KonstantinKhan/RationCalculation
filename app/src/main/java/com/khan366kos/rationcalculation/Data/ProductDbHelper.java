@@ -3,10 +3,8 @@ package com.khan366kos.rationcalculation.Data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -148,17 +146,12 @@ public class ProductDbHelper extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put(ProductEntry.COLUMN_RATION_DATE, ration.getData());
             cv.put(ProductEntry.COLUMN_RATION_BLOB, byteArrayOutputStream.toByteArray());
-            Log.d(TAG, "insertRation: " + cv);
             db.insertOrThrow(TABLE_RATIONS, null, cv);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         setCursor(TABLE_RATIONS);
-
-        Log.d(TAG, "insertRation: " + cursor.getCount());
         cursor.close();
-
     }
 
     public Cursor getCursor() {

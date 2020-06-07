@@ -17,7 +17,7 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/btn_delete_product_component"
+            android:id="@+id/btn_delete_component"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="4dp"
@@ -29,7 +29,7 @@
             android:translationZ="6dp" />
 
         <ImageButton
-            android:id="@+id/btn_edit_product_component"
+            android:id="@+id/btn_edit_component"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="4dp"

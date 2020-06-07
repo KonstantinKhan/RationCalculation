@@ -51,11 +51,7 @@ public class Ration implements Serializable {
      * @param product - проверяемый продукт.
      */
     public void remove(Product product) {
-        for (Product p : composition) {
-            if (p.equals(product)) {
-                composition.remove(product);
-            }
-        }
+        composition.remove(product);
     }
 
     public List<Product> getComposition() {

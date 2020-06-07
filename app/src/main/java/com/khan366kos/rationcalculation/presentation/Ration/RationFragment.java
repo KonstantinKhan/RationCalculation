@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -102,6 +101,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
             String dateStr = simpleDateFormat.format(date) + "г.";
             tvHeading.setText(dateStr);
             presenter.onShowRation(dateStr);
+            setValueRation();
         });
 
         bnv.setOnNavigationItemSelectedListener(menuItem -> {
@@ -133,8 +133,6 @@ public class RationFragment extends TemplateFragment implements ContractRational
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        Log.d(TAG, "onResume: А здесь начнем записывать рацион в базу данных");
     }
 
     @Override
@@ -287,22 +285,33 @@ public class RationFragment extends TemplateFragment implements ContractRational
         return nutrients;
     }
 
-    private void onSetWeightComponent() {
+    @Override
+    public void setRation(Ration ration) {
+        adapter = new RationAdapter(new RationAdapter.OnMove() {
+            @Override
+            public void onSetWeightComponent() {
+                setValueRation();
+                presenter.onSuggestionClick(adapter.getRation());
+            }
+
+            @Override
+            public void onClickBtnDelete() {
+                setValueRation();
+                presenter.onSuggestionClick(adapter.getRation());
+            }
+        }, ration);
+        adapter.getRation().setData(currentDate());
+        recyclerView.setAdapter(adapter);
+        setValueRation();
+        recyclerView.setItemAnimator(null);
+    }
+
+    private void setValueRation() {
         double[] nutrientsRation = RationFragment.this.setNutrientsRation();
         tvWeightRation.setText(String.valueOf(nutrientsRation[0]).replace(".", ","));
         tvCaloriesRation.setText(String.valueOf(nutrientsRation[1]).replace(".", ","));
         tvProteinsRation.setText(String.valueOf(nutrientsRation[2]).replace(".", ","));
         tvFatsRation.setText(String.valueOf(nutrientsRation[3]).replace(".", ","));
         tvCarbohydratesRation.setText(String.valueOf(nutrientsRation[4]).replace(".", ","));
-
-        presenter.onSuggestionClick(adapter.getRation());
-    }
-
-    @Override
-    public void setRation(Ration ration) {
-        adapter = new RationAdapter(this::onSetWeightComponent, ration);
-        adapter.getRation().setData(currentDate());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(null);
     }
 }

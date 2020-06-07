@@ -2,11 +2,12 @@ package com.khan366kos.rationcalculation.presentation.Ration;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,8 +18,6 @@ import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
 
 import java.util.List;
-
-import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TAG;
 
 public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationViewHolder> {
 
@@ -43,6 +42,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         holder.product = ration.getComposition().get(position);
         holder.bind(ration.getComposition().get(position));
         holder.etWeight.setText(String.valueOf(ration.getComposition().get(position).getWeight()));
+        holder.position = position;
     }
 
     @Override
@@ -57,6 +57,8 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
     public interface OnMove {
         void onSetWeightComponent();
+
+        void onClickBtnDelete();
     }
 
     public List<Product> getComponents() {
@@ -76,6 +78,8 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         private TextView tvCarbohydrates;
         private EditText etWeight;
         private Product product;
+        private ImageButton btnDelete;
+        private int position;
 
         public RationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,6 +89,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
             tvFats = itemView.findViewById(R.id.tv_search_fats_component);
             tvCarbohydrates = itemView.findViewById(R.id.tv_search_carbohydrates_component);
             etWeight = itemView.findViewById(R.id.et_search_weight_component);
+            btnDelete = itemView.findViewById(R.id.btn_delete_component);
 
             etWeight.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -110,6 +115,12 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                 public void afterTextChanged(Editable editable) {
 
                 }
+            });
+
+            btnDelete.setOnClickListener(view -> {
+                ration.remove(product);
+                onMove.onClickBtnDelete();
+                notifyItemRemoved(position);
             });
         }
 

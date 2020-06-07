@@ -22,5 +22,7 @@ public interface ContractRational {
         void onShowRation(String date);
 
         void onSuggestionClick(Ration ration);
+
+        void onClickBtnDelete(String date);
     }
 }

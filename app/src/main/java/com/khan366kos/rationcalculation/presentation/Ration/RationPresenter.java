@@ -66,4 +66,9 @@ public class RationPresenter implements ContractRational.RationPresenter {
                 .subscribeOn(Schedulers.newThread())
                 .subscribe();
     }
+
+    @Override
+    public void onClickBtnDelete(String date) {
+
+    }
 }
