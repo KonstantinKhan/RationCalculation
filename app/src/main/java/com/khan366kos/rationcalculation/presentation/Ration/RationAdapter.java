@@ -2,6 +2,7 @@ package com.khan366kos.rationcalculation.presentation.Ration;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
 
 import java.util.List;
+
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TAG;
 
 public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationViewHolder> {
 
@@ -62,6 +65,8 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         void onClickBtnDelete();
 
         void onClickBtnEdit();
+
+        void onClickItemComponent();
     }
 
     public List<Product> getComponents() {
@@ -101,6 +106,10 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
             btnDelete = itemView.findViewById(R.id.btn_delete_component);
             btnEdit = itemView.findViewById(R.id.btn_edit_component);
             srl = itemView.findViewById(R.id.srl_item_component);
+
+            srl.setOnClickListener(view -> {
+                onMove.onClickItemComponent();
+            });
 
             etWeight.addTextChangedListener(new TextWatcher() {
                 @Override

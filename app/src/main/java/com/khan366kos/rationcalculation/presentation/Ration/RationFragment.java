@@ -307,8 +307,13 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
             @Override
             public void onClickBtnEdit() {
+                menuItemSvComponent.collapseActionView();
                 String name = adapter.getRation().getComposition().get(adapter.getEditPosition()).getName();
                 presenter.onClickBtnEdit(name);
+            }
+
+            @Override
+            public void onClickItemComponent() {
             }
         }, ration);
         adapter.getRation().setData(currentDate());
