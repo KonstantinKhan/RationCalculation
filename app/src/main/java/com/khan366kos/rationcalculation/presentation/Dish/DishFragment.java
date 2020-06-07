@@ -90,6 +90,7 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dish, container, false);
         init(view);
+
         tvHeading.setText(getString(R.string.dish_name));
         imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         return view;
@@ -160,7 +161,7 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(dishAdapter);
 
-        etDishWeightCooked.setText(String.valueOf(dishAdapter.getDish().getWeight()));
+        etDishWeightCooked.setText(String.valueOf(dishAdapter.getDish().getWeightCooked()));
         setValuesRaw();
         setValuesCooked();
 

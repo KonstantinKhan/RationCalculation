@@ -56,8 +56,6 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProd
 
         holder.tvProductNameComponent.setText(holder.product.getName());
 
-        Log.d(TAG, "onBindViewHolder: " + holder.product.getName());
-
         makeValuesProduct(holder.product, holder.tvProductCaloriesComponent,
                 holder.tvProductProteinsComponent, holder.tvProductFatsComponent,
                 holder.tvProductCarbohydratesComponent);
