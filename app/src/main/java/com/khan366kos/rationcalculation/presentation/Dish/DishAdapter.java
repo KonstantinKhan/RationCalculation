@@ -4,6 +4,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +24,19 @@ import com.khan366kos.rationcalculation.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TAG;
+
 public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProductViewHolder> {
 
     private Dish dish; // Создаваемое блюдо
     private OnMove onMove; // Интерфейс для передачи событий в DishFragment;
     private List<SuggestionProductViewHolder> list = new ArrayList<>();
 
-    public DishAdapter(OnMove onMove) {
+    public DishAdapter(OnMove onMove, Dish dish) {
         this.onMove = onMove;
-        dish = new Dish();
+        if (dish != null) {
+            this.dish = dish;
+        } else this.dish = new Dish();
     }
 
     @NonNull
@@ -51,9 +56,12 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProd
 
         holder.tvProductNameComponent.setText(holder.product.getName());
 
+        Log.d(TAG, "onBindViewHolder: " + holder.product.getName());
+
         makeValuesProduct(holder.product, holder.tvProductCaloriesComponent,
                 holder.tvProductProteinsComponent, holder.tvProductFatsComponent,
                 holder.tvProductCarbohydratesComponent);
+        holder.etProductWeightComponent.setText(String.valueOf(holder.product.getWeight()));
     }
 
     @Override

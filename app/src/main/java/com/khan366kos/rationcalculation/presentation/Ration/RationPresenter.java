@@ -71,4 +71,12 @@ public class RationPresenter implements ContractRational.RationPresenter {
     public void onClickBtnDelete(String date) {
 
     }
+
+    @Override
+    public void onClickBtnEdit(String name) {
+        dataProvider.getDish(name)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(dish -> view.editDish(dish));
+    }
 }

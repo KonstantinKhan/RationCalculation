@@ -6,6 +6,7 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +31,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.khan366kos.rationcalculation.MainActivity;
 import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
-import com.khan366kos.rationcalculation.MyToast;
+import com.khan366kos.rationcalculation.Service.Toast.MyToast;
 import com.khan366kos.rationcalculation.R;
 import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterFactory;
 import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterTypes;
@@ -72,6 +73,16 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
     private InputMethodManager imm;
 
     private CursorAdapterFactory cursorAdapterFactory;
+
+    private Dish dish;
+
+    public DishFragment() {
+        dish = new Dish();
+    }
+
+    public DishFragment(Dish dish) {
+        this.dish = dish;
+    }
 
     @Nullable
     @Override
@@ -139,14 +150,21 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                     menuItemSvComponent.collapseActionView();
                 }
             }
-        });
+        }, dish);
     }
 
     @Override
     public void onResume() {
+        super.onResume();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(dishAdapter);
+
+        etDishWeightCooked.setText(String.valueOf(dishAdapter.getDish().getWeight()));
+        setValuesRaw();
+        setValuesCooked();
+
+
 
         etDishWeightCooked.setOnFocusChangeListener((view, b) -> {
 
@@ -289,7 +307,7 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                 editDishName(true);
             }
         });
-        super.onResume();
+
     }
 
     @Override

@@ -14,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.khan366kos.rationcalculation.CheckContentET;
-import com.khan366kos.rationcalculation.MyToast;
+import com.khan366kos.rationcalculation.Service.ViewExt.CheckContentET;
+import com.khan366kos.rationcalculation.Service.Toast.MyToast;
 import com.khan366kos.rationcalculation.R;
 
 public class DialogFragmentAddProduct extends DialogFragment {

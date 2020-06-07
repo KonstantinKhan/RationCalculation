@@ -1,4 +1,4 @@
-package com.khan366kos.rationcalculation;
+package com.khan366kos.rationcalculation.Service.Toast;
 
 import android.content.Context;
 import android.view.Gravity;

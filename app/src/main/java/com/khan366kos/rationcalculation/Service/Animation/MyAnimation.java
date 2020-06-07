@@ -1,8 +1,10 @@
-package com.khan366kos.rationcalculation;
+package com.khan366kos.rationcalculation.Service.Animation;
 
 import android.content.Context;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+
+import com.khan366kos.rationcalculation.R;
 
 public class MyAnimation {
 

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.khan366kos.rationcalculation.Model.Product;
-import com.khan366kos.rationcalculation.MyToast;
+import com.khan366kos.rationcalculation.Service.Toast.MyToast;
 import com.khan366kos.rationcalculation.R;
 
 import java.util.List;

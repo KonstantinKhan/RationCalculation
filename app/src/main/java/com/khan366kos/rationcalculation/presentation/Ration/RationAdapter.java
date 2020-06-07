@@ -5,7 +5,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -23,6 +22,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
     private Ration ration;
     private RationAdapter.OnMove onMove;
+    private int editPosition;
 
     public RationAdapter(RationAdapter.OnMove onMove, Ration ration) {
         this.ration = ration;
@@ -59,6 +59,8 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         void onSetWeightComponent();
 
         void onClickBtnDelete();
+
+        void onClickBtnEdit();
     }
 
     public List<Product> getComponents() {
@@ -67,6 +69,10 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
     public Ration getRation() {
         return ration;
+    }
+
+    public int getEditPosition() {
+        return editPosition;
     }
 
     public class RationViewHolder extends RecyclerView.ViewHolder {
@@ -79,6 +85,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         private EditText etWeight;
         private Product product;
         private ImageButton btnDelete;
+        private ImageButton btnEdit;
         private int position;
 
         public RationViewHolder(@NonNull View itemView) {
@@ -90,6 +97,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
             tvCarbohydrates = itemView.findViewById(R.id.tv_search_carbohydrates_component);
             etWeight = itemView.findViewById(R.id.et_search_weight_component);
             btnDelete = itemView.findViewById(R.id.btn_delete_component);
+            btnEdit = itemView.findViewById(R.id.btn_edit_component);
 
             etWeight.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -121,6 +129,11 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                 ration.remove(product);
                 onMove.onClickBtnDelete();
                 notifyItemRemoved(position);
+            });
+            
+            btnEdit.setOnClickListener(view -> {
+                editPosition = position;
+                onMove.onClickBtnEdit();
             });
         }
 

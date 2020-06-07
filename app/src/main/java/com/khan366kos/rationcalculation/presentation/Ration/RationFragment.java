@@ -17,16 +17,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.khan366kos.rationcalculation.Fragments.TemplateFragment;
+import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
 import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterFactory;
 import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterTypes;
+import com.khan366kos.rationcalculation.presentation.Dish.DishFragment;
 
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
@@ -59,12 +62,14 @@ public class RationFragment extends TemplateFragment implements ContractRational
     private TextView tvFatsRation;
     private TextView tvCarbohydratesRation;
     private DatePickerDialog datePickerDialog;
+    private Fragment thisFragment;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         cursorAdapterFactory = new CursorAdapterFactory();
         datePickerDialog = new DatePickerDialog(getContext());
+        thisFragment = this;
     }
 
     @Override
@@ -299,11 +304,25 @@ public class RationFragment extends TemplateFragment implements ContractRational
                 setValueRation();
                 presenter.onSuggestionClick(adapter.getRation());
             }
+
+            @Override
+            public void onClickBtnEdit() {
+                String name = adapter.getRation().getComposition().get(adapter.getEditPosition()).getName();
+                presenter.onClickBtnEdit(name);
+            }
         }, ration);
         adapter.getRation().setData(currentDate());
         recyclerView.setAdapter(adapter);
         setValueRation();
         recyclerView.setItemAnimator(null);
+    }
+
+    @Override
+    public void editDish(Dish dish) {
+        Fragment fragment = new DishFragment(dish);
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment, fragment)
+                .commit();
     }
 
     private void setValueRation() {

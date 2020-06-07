@@ -46,9 +46,9 @@ public class TemplateFragment extends Fragment {
         super.onPrepareOptionsMenu(menu);
     }
 
-    public void setComponentAdapter(DishAdapter.OnMove onMove) {
+    /*public void setComponentAdapter(DishAdapter.OnMove onMove) {
         this.componentAdapter = new DishAdapter(onMove);
-    }
+    }*/
 
     public DishAdapter getComponentAdapter() {
         return componentAdapter;

@@ -106,6 +106,10 @@ public class DataProvider {
         });
     }
 
+    public Observable<Dish> getDish(String name) {
+        return Observable.fromCallable(() -> callGetDish(name));
+    }
+
     private void callAddProduct(String productName, String productCalories, String productProteins,
                                 String productFats, String productCarbohydrates) {
 
@@ -349,16 +353,6 @@ public class DataProvider {
         ByteArrayInputStream arrayInputStream;
         ObjectInputStream objectInputStream;
 
-        /*Cursor cursor = productDbHelper.getDb().query(TABLE_RATIONS,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);*/
-
-        //Log.d(TAG, "callQueryRation: " + cursor.getCount());
-
         Cursor cursor = productDbHelper.getDb().query(TABLE_RATIONS,
                 null,
                 COLUMN_RATION_DATE + " = ?",
@@ -366,7 +360,6 @@ public class DataProvider {
                 null,
                 null,
                 null);
-
 
         cursor.moveToFirst();
 
@@ -396,5 +389,38 @@ public class DataProvider {
 
     private void callUpdateRation(Ration ration) {
         productDbHelper.setDb();
+    }
+
+    private Dish callGetDish(String name) {
+        Dish dish = null;
+
+        productDbHelper.setDb();
+
+        ByteArrayInputStream arrayInputStream;
+        ObjectInputStream objectInputStream;
+
+        Cursor cursor = productDbHelper.getDb().query(TABLE_DISHES,
+                null,
+                COLUMN_DISH_NAME + " =? ",
+                new String[]{name},
+                null,
+                null,
+                null);
+
+        cursor.moveToFirst();
+
+        try {
+            arrayInputStream = new ByteArrayInputStream(cursor.getBlob(cursor
+                    .getColumnIndex(COLUMN_DISH_BLOB)));
+            objectInputStream = new ObjectInputStream(arrayInputStream);
+            dish = (Dish) objectInputStream.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        cursor.close();
+
+        return dish;
     }
 }
