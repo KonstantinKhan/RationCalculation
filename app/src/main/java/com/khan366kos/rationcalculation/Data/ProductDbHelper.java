@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -144,7 +145,7 @@ public class ProductDbHelper extends SQLiteOpenHelper {
             outputStream.close();
 
             ContentValues cv = new ContentValues();
-            cv.put(ProductEntry.COLUMN_RATION_DATE, ration.getData());
+            cv.put(ProductEntry.COLUMN_RATION_DATE, ration.getDate());
             cv.put(ProductEntry.COLUMN_RATION_BLOB, byteArrayOutputStream.toByteArray());
             db.insertOrThrow(TABLE_RATIONS, null, cv);
         } catch (IOException e) {
@@ -190,13 +191,14 @@ public class ProductDbHelper extends SQLiteOpenHelper {
             outputStream.close();
 
             ContentValues cv = new ContentValues();
-            cv.put(ProductContract.ProductEntry.COLUMN_RATION_DATE, ration.getData());
+            cv.put(ProductContract.ProductEntry.COLUMN_RATION_DATE, ration.getDate());
             cv.put(ProductContract.ProductEntry.COLUMN_RATION_BLOB, byteArrayOutputStream.toByteArray());
 
             db.update(TABLE_RATIONS,
                     cv,
                     COLUMN_RATION_DATE + " = ?",
-                    new String[]{String.valueOf(ration.getData())});
+                    new String[]{ration.getDate()});
+            Log.d(TAG, "updateRation: update " + ration.getDate());
         } catch (IOException e) {
             e.printStackTrace();
         }

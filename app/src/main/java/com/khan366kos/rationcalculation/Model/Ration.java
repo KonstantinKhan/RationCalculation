@@ -21,11 +21,16 @@ public class Ration implements Serializable {
     private double carbohydratesLimit; // Лимит углеводов дневного рациона.
     private double carbohydratesRation; // Фактическое количество углеводов дневного рациона.
     private List<Product> composition; // состав рациона.
-    private String data; // Дата рациона.
+    private String date; // Дата рациона.
 
 
     public Ration() {
         composition = new ArrayList<>();
+    }
+
+    public Ration(String date) {
+        composition = new ArrayList<>();
+        this.date = date;
     }
 
     public Ration(double caloriesLimit, double proteinsLimit, double fatsLimit, double carbohydratesLimit) {
@@ -133,11 +138,11 @@ public class Ration implements Serializable {
         this.composition = composition;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getData() {
-        return data;
+    public String getDate() {
+        return date;
     }
 }

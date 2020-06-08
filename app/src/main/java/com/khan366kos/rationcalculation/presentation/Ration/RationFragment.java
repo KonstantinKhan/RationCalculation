@@ -212,6 +212,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
                 adapter.notifyItemInserted(i);
 
+                Log.d(TAG, "onSuggestionClick: ");
                 presenter.onSuggestionClick(adapter.getRation());
 
                 cursor.close();
@@ -316,7 +317,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
             public void onClickItemComponent() {
             }
         }, ration);
-        adapter.getRation().setData(currentDate());
+        adapter.getRation().setDate(ration.getDate());
         recyclerView.setAdapter(adapter);
         setValueRation();
         recyclerView.setItemAnimator(null);

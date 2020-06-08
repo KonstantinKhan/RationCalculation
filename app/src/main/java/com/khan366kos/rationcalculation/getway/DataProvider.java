@@ -248,7 +248,7 @@ public class DataProvider {
         String selection = "";
         StringBuilder values = new StringBuilder();
         if (items.size() > 0) {
-            selection = columnName + " NOT LIKE ";
+            selection = columnName + " != ";
             for (int i = 0; i < items.size(); i++) {
                 if (i == 0) {
                     values.append("'" + items.get(i).getName() + "'");
@@ -347,6 +347,7 @@ public class DataProvider {
     }
 
     private Ration callQueryRation(String date) {
+        Log.d(TAG, "callQueryRation: " + date);
         productDbHelper.setDb();
         Ration ration = null;
 
@@ -361,6 +362,8 @@ public class DataProvider {
                 null,
                 null);
 
+        Log.d(TAG, "callQueryRation: " + cursor.getCount());
+
         cursor.moveToFirst();
 
         try {
@@ -368,17 +371,23 @@ public class DataProvider {
                     .getColumnIndex(COLUMN_RATION_BLOB)));
             objectInputStream = new ObjectInputStream(arrayInputStream);
             ration = (Ration) objectInputStream.readObject();
+            Log.d(TAG, "callQueryRation: " + ration.getComposition().size());
         } catch (IOException e) {
+            Log.d(TAG, "callQueryRation: IOException " + e);
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            Log.d(TAG, "callQueryRation: ClassNotFoundException " + e);
             e.printStackTrace();
         }
         cursor.close();
+
+        Log.d(TAG, "callQueryRation: " + ration.getComposition().size());
 
         return ration;
     }
 
     private void callInsertRation(Ration ration) {
+        Log.d(TAG, "callInsertRation: " + ration.getComposition().size());
         productDbHelper.setDb();
         try {
             productDbHelper.insertRation(ration);
