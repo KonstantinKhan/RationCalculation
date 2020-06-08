@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -158,6 +159,13 @@ public class RationFragment extends TemplateFragment implements ContractRational
         // Устанавливаем максимальную ширину поля отображения вариантов поиска.
         svComponent.setMaxWidth(Integer.MAX_VALUE);
 
+        svComponent.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!b) menuItemSvComponent.collapseActionView();
+            }
+        });
+
         svComponent.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -184,6 +192,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
         svComponent.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
             public boolean onSuggestionSelect(int position) {
+
                 return false;
             }
 
