@@ -44,10 +44,10 @@ public class Ration implements Serializable {
     /**
      * Метод для добавления продукта в рацион.
      *
-     * @param product - добавляемый продукт.
+     * @param dish - добавляемое блюдо/продукт.
      */
-    public void addProduct(Product product) {
-        composition.add(product);
+    public void addProduct(Dish dish) {
+        composition.add(dish);
     }
 
     /**
@@ -59,7 +59,7 @@ public class Ration implements Serializable {
         composition.remove(product);
     }
 
-    public List<Product> getComposition() {
+    public List<Dish> getComposition() {
         return composition;
     }
 
@@ -134,7 +134,7 @@ public class Ration implements Serializable {
         return carbohydratesRation;
     }
 
-    public void setComposition(List<Product> composition) {
+    public void setComposition(List<Dish> composition) {
         this.composition = composition;
     }
 
