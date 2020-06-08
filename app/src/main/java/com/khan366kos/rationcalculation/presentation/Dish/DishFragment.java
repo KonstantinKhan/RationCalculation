@@ -75,13 +75,23 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
     private CursorAdapterFactory cursorAdapterFactory;
 
     private Dish dish;
+    private boolean updateDish;
+
+    private OnUpdateRation onUpdateRation;
 
     public DishFragment() {
         dish = new Dish();
+        updateDish = true;
     }
 
-    public DishFragment(Dish dish) {
+    public DishFragment(Dish dish, OnUpdateRation onUpdateRation) {
+        updateDish = false;
         this.dish = dish;
+        this.onUpdateRation = onUpdateRation;
+    }
+
+    public interface OnUpdateRation {
+        void onUpdateRation();
     }
 
     @Nullable
@@ -166,7 +176,6 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
         setValuesCooked();
 
 
-
         etDishWeightCooked.setOnFocusChangeListener((view, b) -> {
 
             // Выполняем действия при наведении фокуса на EditText,
@@ -237,7 +246,9 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                         etDishWeightCooked.selectAll();
                         return true;
                     } else {
-                        presenter.onSaveDish();
+                        if (updateDish) {
+                            presenter.onSaveDish();
+                        } else onUpdateRation.onUpdateRation();
                         return true;
                     }
             }

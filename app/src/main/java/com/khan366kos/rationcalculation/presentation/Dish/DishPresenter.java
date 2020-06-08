@@ -1,5 +1,6 @@
 package com.khan366kos.rationcalculation.presentation.Dish;
 
+import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.getway.DataProvider;
 

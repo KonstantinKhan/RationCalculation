@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
+import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
@@ -45,7 +46,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
     public void onBindViewHolder(@NonNull RationViewHolder holder, int position) {
         holder.product = ration.getComposition().get(position);
         holder.bind(ration.getComposition().get(position));
-        holder.etWeight.setText(String.valueOf(ration.getComposition().get(position).getWeight()));
+        holder.etWeight.setText(String.valueOf(ration.getComposition().get(position).getWeightCooked()));
         holder.position = position;
     }
 

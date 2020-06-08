@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.PointerIcon;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.khan366kos.rationcalculation.Fragments.TemplateFragment;
 import com.khan366kos.rationcalculation.Model.Dish;
+import com.khan366kos.rationcalculation.Model.EnergyValue;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
@@ -159,11 +161,8 @@ public class RationFragment extends TemplateFragment implements ContractRational
         // Устанавливаем максимальную ширину поля отображения вариантов поиска.
         svComponent.setMaxWidth(Integer.MAX_VALUE);
 
-        svComponent.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (!b) menuItemSvComponent.collapseActionView();
-            }
+        svComponent.setOnQueryTextFocusChangeListener((view, b) -> {
+            if (!b) menuItemSvComponent.collapseActionView();
         });
 
         svComponent.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -318,8 +317,11 @@ public class RationFragment extends TemplateFragment implements ContractRational
             @Override
             public void onClickBtnEdit() {
                 menuItemSvComponent.collapseActionView();
-                String name = adapter.getRation().getComposition().get(adapter.getEditPosition()).getName();
-                presenter.onClickBtnEdit(name);
+                Log.d(TAG, "onClickBtnEdit: " + adapter.getRation().getComposition().get(adapter.getEditPosition()).getName());
+                Product product = adapter.getRation().getComposition().get(adapter.getEditPosition());
+
+                /*Dish dish = (Dish) adapter.getRation().getComposition().get(adapter.getEditPosition());
+                editDish(dish);*/
             }
 
             @Override
@@ -334,7 +336,13 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
     @Override
     public void editDish(Dish dish) {
-        Fragment fragment = new DishFragment(dish);
+        Fragment fragment = new DishFragment(dish, new DishFragment.OnUpdateRation() {
+            @Override
+            public void onUpdateRation() {
+                adapter.getRation().getComposition().set(adapter.getRation().getComposition().indexOf(dish), dish);
+                presenter.onSuggestionClick(adapter.getRation());
+            }
+        });
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment, fragment)
                 .commit();
