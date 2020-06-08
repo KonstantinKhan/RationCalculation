@@ -6,11 +6,9 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.PointerIcon;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.khan366kos.rationcalculation.Fragments.TemplateFragment;
 import com.khan366kos.rationcalculation.Model.Dish;
-import com.khan366kos.rationcalculation.Model.EnergyValue;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
@@ -36,6 +33,7 @@ import com.khan366kos.rationcalculation.presentation.Dish.DishFragment;
 
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -173,14 +171,16 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                List<Product> products = new ArrayList<>();
+                products.addAll(adapter.getRation().getComposition());
                 switch (bnvMenu) {
                     case R.id.pick_product:
                         svComponent.post(() -> presenter
-                                .onQueryTextChangeProduct(newText, adapter.getComponents()));
+                                .onQueryTextChangeProduct(newText, products));
                         break;
                     case R.id.pick_dish:
                         svComponent.post(() -> presenter
-                                .onQueryTextChangeDish(newText, adapter.getComponents()));
+                                .onQueryTextChangeDish(newText, products));
                         break;
                     default:
                 }
@@ -203,14 +203,16 @@ public class RationFragment extends TemplateFragment implements ContractRational
                 Cursor cursor = svComponent.getSuggestionsAdapter().getCursor();
                 cursor.moveToPosition(position);
 
-                Product product = new Product(cursor.getString(1),
+                Dish dish = new Dish(cursor.getString(1),
                         Double.parseDouble(cursor.getString(2).replace(",", ".")),
                         Double.parseDouble(cursor.getString(3).replace(",", ".")),
                         Double.parseDouble(cursor.getString(4).replace(",", ".")),
                         Double.parseDouble(cursor.getString(5).replace(",", ".")));
 
+                Log.d(TAG, "onSuggestionClick: " + dish.getCalories());
+
                 // Добавляем продукт в рацион.
-                adapter.getRation().addProduct(product);
+                adapter.getRation().addDish(dish);
 
                 // Прокручивает RecyclerView до добавленного компонента.
                 recyclerView.smoothScrollToPosition(adapter.getComponents().size() - 1);
@@ -220,7 +222,6 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
                 adapter.notifyItemInserted(i);
 
-                Log.d(TAG, "onSuggestionClick: ");
                 presenter.onSuggestionClick(adapter.getRation());
 
                 cursor.close();
@@ -254,7 +255,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
     }
 
     @Override
-    public void showComponent(List<Product> components) {
+    public void showComponent(List<Dish> components) {
         adapter.setComponents(components);
     }
 

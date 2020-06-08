@@ -303,4 +303,20 @@ public class Product extends EnergyValue implements Serializable {
         fatsDefault = valuePer100(getFats(), this.weightCooked);
         carbohydratesDefault = valuePer100(getCarbohydrates(), this.weightCooked);
     }
+
+    public void setCaloriesDefault(double caloriesDefault) {
+        this.caloriesDefault = caloriesDefault;
+    }
+
+    public void setProteinsDefault(double proteinsDefault) {
+        this.proteinsDefault = proteinsDefault;
+    }
+
+    public void setFatsDefault(double fatsDefault) {
+        this.fatsDefault = fatsDefault;
+    }
+
+    public void setCarbohydratesDefault(double carbohydratesDefault) {
+        this.carbohydratesDefault = carbohydratesDefault;
+    }
 }

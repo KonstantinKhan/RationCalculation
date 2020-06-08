@@ -3,6 +3,7 @@ package com.khan366kos.rationcalculation.getway;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
 import com.khan366kos.rationcalculation.Model.Dish;
@@ -309,6 +310,7 @@ public class DataProvider {
     }
 
     private List<Product> callQueryDishes(String s, List<Product> items) {
+        Log.d(TAG, "callQueryDishes: " + s);
         productDbHelper.setDb();
 
         List<Product> queryProduct = new ArrayList<>();
@@ -325,15 +327,16 @@ public class DataProvider {
                 null,
                 null);
 
-
         if (cursor.moveToFirst()) {
             do {
                 try {
                     arrayInputStream = new ByteArrayInputStream(cursor.getBlob(cursor.getColumnIndex(COLUMN_DISH_BLOB)));
                     objectInputStream = new ObjectInputStream(arrayInputStream);
                     dish = (Dish) objectInputStream.readObject();
+                    Log.d(TAG, "callQueryDishes: " + dish.getName());
                     queryProduct.add(dish);
                 } catch (IOException e) {
+                    Log.d(TAG, "callQueryDishes: IOException " + e);
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -347,7 +350,6 @@ public class DataProvider {
     }
 
     private Ration callQueryRation(String date) {
-        Log.d(TAG, "callQueryRation: " + date);
         productDbHelper.setDb();
         Ration ration = null;
 
@@ -362,8 +364,6 @@ public class DataProvider {
                 null,
                 null);
 
-        Log.d(TAG, "callQueryRation: " + cursor.getCount());
-
         cursor.moveToFirst();
 
         try {
@@ -371,23 +371,17 @@ public class DataProvider {
                     .getColumnIndex(COLUMN_RATION_BLOB)));
             objectInputStream = new ObjectInputStream(arrayInputStream);
             ration = (Ration) objectInputStream.readObject();
-            Log.d(TAG, "callQueryRation: " + ration.getComposition().size());
         } catch (IOException e) {
-            Log.d(TAG, "callQueryRation: IOException " + e);
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            Log.d(TAG, "callQueryRation: ClassNotFoundException " + e);
             e.printStackTrace();
         }
         cursor.close();
-
-        Log.d(TAG, "callQueryRation: " + ration.getComposition().size());
 
         return ration;
     }
 
     private void callInsertRation(Ration ration) {
-        Log.d(TAG, "callInsertRation: " + ration.getComposition().size());
         productDbHelper.setDb();
         try {
             productDbHelper.insertRation(ration);

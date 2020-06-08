@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ContractRational {
     interface RationView {
-        void showComponent(List<Product> components);
+        void showComponent(List<Dish> components);
 
         void notifyCursorAdapter(List<Product> components);
 

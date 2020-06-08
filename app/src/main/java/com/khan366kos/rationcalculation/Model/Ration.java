@@ -46,7 +46,7 @@ public class Ration implements Serializable {
      *
      * @param dish - добавляемое блюдо/продукт.
      */
-    public void addProduct(Dish dish) {
+    public void addDish(Dish dish) {
         composition.add(dish);
     }
 

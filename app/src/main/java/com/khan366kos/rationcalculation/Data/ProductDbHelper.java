@@ -198,7 +198,6 @@ public class ProductDbHelper extends SQLiteOpenHelper {
                     cv,
                     COLUMN_RATION_DATE + " = ?",
                     new String[]{ration.getDate()});
-            Log.d(TAG, "updateRation: update " + ration.getDate());
         } catch (IOException e) {
             e.printStackTrace();
         }

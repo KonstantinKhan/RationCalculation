@@ -44,7 +44,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
     @Override
     public void onBindViewHolder(@NonNull RationViewHolder holder, int position) {
-        holder.product = ration.getComposition().get(position);
+        holder.dish = ration.getComposition().get(position);
         holder.bind(ration.getComposition().get(position));
         holder.etWeight.setText(String.valueOf(ration.getComposition().get(position).getWeightCooked()));
         holder.position = position;
@@ -55,7 +55,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         return ration.getComposition().size();
     }
 
-    public void setComponents(List<Product> components) {
+    public void setComponents(List<Dish> components) {
         ration.setComposition(components);
         notifyDataSetChanged();
     }
@@ -70,7 +70,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         void onClickItemComponent();
     }
 
-    public List<Product> getComponents() {
+    public List<Dish> getComponents() {
         return ration.getComposition();
     }
 
@@ -90,7 +90,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         private TextView tvFats;
         private TextView tvCarbohydrates;
         private EditText etWeight;
-        private Product product;
+        private Dish dish;
         private ImageButton btnDelete;
         private ImageButton btnEdit;
         private int position;
@@ -121,14 +121,16 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     if (charSequence.toString().length() > 0) {
-                        product.setWeight(Integer.parseInt(charSequence.toString()));
+                        dish.setWeight(Integer.parseInt(charSequence.toString()));
                     } else {
-                        product.setWeight(0);
+                        dish.setWeight(0);
                     }
-                    tvCalories.setText(String.valueOf(product.getCalories()).replace(".", ","));
-                    tvProteins.setText(String.valueOf(product.getProteins()).replace(".", ","));
-                    tvFats.setText(String.valueOf(product.getFats()).replace(".", ","));
-                    tvCarbohydrates.setText(String.valueOf(product.getCarbohydrates()).replace(".", ","));
+
+                    Log.d(TAG, "onTextChanged: " + dish.getCalories() + " " + dish.getCaloriesDefault() + " " + dish.getCaloriesCookedStr());
+                    tvCalories.setText(String.valueOf(dish.getCalories()).replace(".", ","));
+                    tvProteins.setText(String.valueOf(dish.getProteins()).replace(".", ","));
+                    tvFats.setText(String.valueOf(dish.getFats()).replace(".", ","));
+                    tvCarbohydrates.setText(String.valueOf(dish.getCarbohydrates()).replace(".", ","));
                     onMove.onSetWeightComponent();
                 }
 
@@ -139,7 +141,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
             });
 
             btnDelete.setOnClickListener(view -> {
-                ration.remove(product);
+                ration.remove(dish);
                 onMove.onClickBtnDelete();
                 notifyItemRemoved(position);
                 srl.close(false);
@@ -151,12 +153,12 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
             });
         }
 
-        private void bind(Product product) {
-            tvName.setText(product.getName());
-            tvCalories.setText(String.valueOf(product.getCalories()).replace(".", ","));
-            tvProteins.setText(String.valueOf(product.getProteins()).replace(".", ","));
-            tvFats.setText(String.valueOf(product.getFats()).replace(".", ","));
-            tvCarbohydrates.setText(String.valueOf(product.getCarbohydrates()).replace(".", ","));
+        private void bind(Dish dish) {
+            tvName.setText(dish.getName());
+            tvCalories.setText(String.valueOf(dish.getCalories()).replace(".", ","));
+            tvProteins.setText(String.valueOf(dish.getProteins()).replace(".", ","));
+            tvFats.setText(String.valueOf(dish.getFats()).replace(".", ","));
+            tvCarbohydrates.setText(String.valueOf(dish.getCarbohydrates()).replace(".", ","));
         }
     }
 }

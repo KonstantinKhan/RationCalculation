@@ -25,11 +25,12 @@ public class Dish extends Product implements Serializable {
      * @param fats - жиры блюда.
      * @param carbohydrates - углеводы блюда
      */
-    public Dish(double calories, double proteins, double fats, double carbohydrates) {
-        this.setCalories(calories);
-        this.setProteins(proteins);
-        this.setFats(fats);
-        this.setCarbohydrates(carbohydrates);
+    public Dish(String name, double calories, double proteins, double fats, double carbohydrates) {
+        this.setName(name);
+        this.setCaloriesDefault(calories);
+        this.setProteinsDefault(proteins);
+        this.setFatsDefault(fats);
+        this.setCarbohydratesDefault(carbohydrates);
     }
 
     public Dish(String name, int weight, double calories, double proteins, double fats, double carbohydrates) {
