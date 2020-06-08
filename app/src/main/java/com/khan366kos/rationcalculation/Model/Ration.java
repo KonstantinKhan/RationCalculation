@@ -20,7 +20,7 @@ public class Ration implements Serializable {
     private double fatsRation; // Фактическое количество жиров дневного рациона.
     private double carbohydratesLimit; // Лимит углеводов дневного рациона.
     private double carbohydratesRation; // Фактическое количество углеводов дневного рациона.
-    private List<Product> composition; // состав рациона.
+    private List<Dish> composition; // состав рациона.
     private String date; // Дата рациона.
 
 
