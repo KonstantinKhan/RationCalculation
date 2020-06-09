@@ -398,16 +398,6 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                 return true;
             }
         });
-
-        // Закрываем SearchView, если у него пропадает фокус.
-        svComponent.setOnQueryTextFocusChangeListener((view, b) ->
-                svComponent.post(() -> {
-                    if (!b) {
-                        if (menuItemSvComponent.isActionViewExpanded()) {
-                            menuItemSvComponent.collapseActionView();
-                        }
-                    }
-                }));
     }
 
     // Метод для инициализации View.

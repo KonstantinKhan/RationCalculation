@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -38,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText etDishName;
 
     private MenuItem menuItemAddComponent;
+    private MenuItem menuItemSvComponent;
+
+    private SearchView svComponent;
 
     public static int newFragmentId;
     private int oldFragmentId;
@@ -135,6 +139,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (newFragmentId == R.id.products_base) menuItemAddComponent.setVisible(true);
+
+        menuItemSvComponent = menu.findItem(R.id.mi_sv_component);
+        svComponent = (SearchView) menuItemSvComponent.getActionView();
+
+        // Закрываем SearchView, если у него пропадает фокус.
+        svComponent.setOnQueryTextFocusChangeListener((view, b) ->
+                svComponent.post(() -> {
+                    if (!b) {
+                        if (menuItemSvComponent.isActionViewExpanded()) {
+                            menuItemSvComponent.collapseActionView();
+                        }
+                    }
+                }));
 
         return super.onPrepareOptionsMenu(menu);
     }
