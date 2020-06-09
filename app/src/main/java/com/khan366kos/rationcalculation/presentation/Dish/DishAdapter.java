@@ -94,7 +94,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProd
     // Метод для проверки заполнения полей для значений веса продуктов.
     public boolean checkFillWeightProducts() {
 
-        boolean checkFill = false; // Флаг, сигнализирующий, есть ли незаполненные поляж
+        boolean checkFill = false; // Флаг, сигнализирующий, есть ли незаполненные поля
 
         // Цвет для подчеркивания незаполненных полей.
         ColorStateList colorNonFill = ColorStateList.valueOf(Color.RED);
@@ -232,6 +232,7 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.SuggestionProd
                 srl.close(false);
                 dish.getComposition().remove(product);
                 dish.setNutrients();
+                list.remove(this);
                 notifyItemRemoved(getAdapterPosition());
                 onMove.deleteProductComponent();
             });
