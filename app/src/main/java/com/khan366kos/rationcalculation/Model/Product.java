@@ -1,10 +1,14 @@
 package com.khan366kos.rationcalculation.Model;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TAG;
 
 /**
  * Класс, описывающий конкретный продукт.
@@ -82,7 +86,7 @@ public class Product extends EnergyValue implements Serializable {
     }
 
     public void setMacronutrientsPortion() {
-        if (!cooked) {
+      /*  if (!cooked) {
             weightCooked = weight;
             weightPortion = weight;
         } else {
@@ -95,13 +99,17 @@ public class Product extends EnergyValue implements Serializable {
             if (weight == 0) {
                 System.out.println("Укажите вес блюда в сыром виде");
             }
-        }
-        if (weight != 0 && weightPortion != 0 && weightCooked != 0) {
-            caloriesPortion = getCalories() * weightPortion / weightCooked;
-            proteinsPortion = getProteins() * weightPortion / weightCooked;
-            fatsPortion = getFats() * weightPortion / weightCooked;
-            carbohydratesPortion = getCarbohydrates() * weightPortion / weightCooked;
-        }
+        }*/
+        // if (weight != 0 && weightCooked != 0) {
+        caloriesPortion = new BigDecimal(weightPortion * getCaloriesDefault() / 100)
+                .setScale(1, RoundingMode.HALF_EVEN).doubleValue();
+        proteinsPortion = new BigDecimal(weightPortion * getProteinsDefault() / 100)
+                .setScale(1, RoundingMode.HALF_EVEN).doubleValue();
+        fatsPortion = new BigDecimal(weightPortion * getFatsDefault() / 100)
+                .setScale(1, RoundingMode.HALF_EVEN).doubleValue();
+        carbohydratesPortion = new BigDecimal(weightPortion * getCarbohydratesDefault() / 100)
+                .setScale(1, RoundingMode.HALF_EVEN).doubleValue();
+        // }
     }
 
     public void setCooked(boolean cooked) {

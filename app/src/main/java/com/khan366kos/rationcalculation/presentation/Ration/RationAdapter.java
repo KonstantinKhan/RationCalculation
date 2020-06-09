@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.khan366kos.rationcalculation.Model.Dish;
-import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
 
@@ -27,7 +26,8 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
     private Ration ration;
     private RationAdapter.OnMove onMove;
-    private int editPosition;
+    private String name;
+    private int editDish;
 
     public RationAdapter(RationAdapter.OnMove onMove, Ration ration) {
         this.ration = ration;
@@ -46,8 +46,8 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
     public void onBindViewHolder(@NonNull RationViewHolder holder, int position) {
         holder.dish = ration.getComposition().get(position);
         holder.bind(ration.getComposition().get(position));
-        holder.etWeight.setText(String.valueOf(ration.getComposition().get(position).getWeightCooked()));
-        holder.position = position;
+        holder.etWeight.setText(String.valueOf(ration.getComposition().get(position).getWeightPortion()));
+        holder.position = ration.getComposition().indexOf(holder.dish);
     }
 
     @Override
@@ -78,8 +78,12 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         return ration;
     }
 
-    public int getEditPosition() {
-        return editPosition;
+    public String getName() {
+        return name;
+    }
+
+    public int getEditDish() {
+        return editDish;
     }
 
     public class RationViewHolder extends RecyclerView.ViewHolder {
@@ -121,16 +125,17 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     if (charSequence.toString().length() > 0) {
-                        dish.setWeight(Integer.parseInt(charSequence.toString()));
+                        dish.setWeightPortion(Integer.parseInt(charSequence.toString()));
                     } else {
-                        dish.setWeight(0);
+                        dish.setWeightPortion(0);
                     }
 
-                    Log.d(TAG, "onTextChanged: " + dish.getCalories() + " " + dish.getCaloriesDefault() + " " + dish.getCaloriesCookedStr());
-                    tvCalories.setText(String.valueOf(dish.getCalories()).replace(".", ","));
-                    tvProteins.setText(String.valueOf(dish.getProteins()).replace(".", ","));
-                    tvFats.setText(String.valueOf(dish.getFats()).replace(".", ","));
-                    tvCarbohydrates.setText(String.valueOf(dish.getCarbohydrates()).replace(".", ","));
+                    dish.setMacronutrientsPortion();
+
+                    tvCalories.setText(String.valueOf(dish.getCaloriesPortion()).replace(".", ","));
+                    tvProteins.setText(String.valueOf(dish.getProteinsPortion()).replace(".", ","));
+                    tvFats.setText(String.valueOf(dish.getFatsPortion()).replace(".", ","));
+                    tvCarbohydrates.setText(String.valueOf(dish.getCarbohydratesPortion()).replace(".", ","));
                     onMove.onSetWeightComponent();
                 }
 
@@ -144,21 +149,23 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                 ration.remove(dish);
                 onMove.onClickBtnDelete();
                 notifyItemRemoved(position);
+                notifyItemRangeRemoved(position, 1);
                 srl.close(false);
             });
-            
+
             btnEdit.setOnClickListener(view -> {
-                editPosition = position;
+                name = dish.getName();
+                editDish = position;
                 onMove.onClickBtnEdit();
             });
         }
 
         private void bind(Dish dish) {
             tvName.setText(dish.getName());
-            tvCalories.setText(String.valueOf(dish.getCalories()).replace(".", ","));
-            tvProteins.setText(String.valueOf(dish.getProteins()).replace(".", ","));
-            tvFats.setText(String.valueOf(dish.getFats()).replace(".", ","));
-            tvCarbohydrates.setText(String.valueOf(dish.getCarbohydrates()).replace(".", ","));
+            tvCalories.setText(String.valueOf(dish.getCaloriesPortion()).replace(".", ","));
+            tvProteins.setText(String.valueOf(dish.getProteinsPortion()).replace(".", ","));
+            tvFats.setText(String.valueOf(dish.getFatsPortion()).replace(".", ","));
+            tvCarbohydrates.setText(String.valueOf(dish.getCarbohydratesPortion()).replace(".", ","));
         }
     }
 }

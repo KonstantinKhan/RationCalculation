@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,6 +65,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
     private TextView tvCarbohydratesRation;
     private DatePickerDialog datePickerDialog;
     private Fragment thisFragment;
+    private FragmentManager fm;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -71,6 +73,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
         cursorAdapterFactory = new CursorAdapterFactory();
         datePickerDialog = new DatePickerDialog(getContext());
         thisFragment = this;
+        fm = getParentFragmentManager();
     }
 
     @Override
@@ -159,10 +162,6 @@ public class RationFragment extends TemplateFragment implements ContractRational
         // Устанавливаем максимальную ширину поля отображения вариантов поиска.
         svComponent.setMaxWidth(Integer.MAX_VALUE);
 
-        svComponent.setOnQueryTextFocusChangeListener((view, b) -> {
-            if (!b) menuItemSvComponent.collapseActionView();
-        });
-
         svComponent.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -203,26 +202,14 @@ public class RationFragment extends TemplateFragment implements ContractRational
                 Cursor cursor = svComponent.getSuggestionsAdapter().getCursor();
                 cursor.moveToPosition(position);
 
-                Dish dish = new Dish(cursor.getString(1),
-                        Double.parseDouble(cursor.getString(2).replace(",", ".")),
-                        Double.parseDouble(cursor.getString(3).replace(",", ".")),
-                        Double.parseDouble(cursor.getString(4).replace(",", ".")),
-                        Double.parseDouble(cursor.getString(5).replace(",", ".")));
-
-                Log.d(TAG, "onSuggestionClick: " + dish.getCalories());
-
-                // Добавляем продукт в рацион.
-                adapter.getRation().addDish(dish);
-
-                // Прокручивает RecyclerView до добавленного компонента.
-                recyclerView.smoothScrollToPosition(adapter.getComponents().size() - 1);
+                presenter.onSuggestionClick(cursor.getString(1));
 
                 // Обнуляем строку запроса.
                 svComponent.setQuery("", false);
 
                 adapter.notifyItemInserted(i);
 
-                presenter.onSuggestionClick(adapter.getRation());
+                presenter.onUpdateRation(adapter.getRation());
 
                 cursor.close();
                 return true;
@@ -284,11 +271,11 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
         if (adapter.getComponents().size() != 0) {
             for (Product product : adapter.getComponents()) {
-                nutrients[0] = nutrients[0] + product.getWeight();
-                nutrients[1] = nutrients[1] + product.getCalories();
-                nutrients[2] = nutrients[2] + product.getProteins();
-                nutrients[3] = nutrients[3] + product.getFats();
-                nutrients[4] = nutrients[4] + product.getCarbohydrates();
+                nutrients[0] = nutrients[0] + product.getWeightPortion();
+                nutrients[1] = nutrients[1] + product.getCaloriesPortion();
+                nutrients[2] = nutrients[2] + product.getProteinsPortion();
+                nutrients[3] = nutrients[3] + product.getFatsPortion();
+                nutrients[4] = nutrients[4] + product.getCarbohydratesPortion();
             }
 
             nutrients[0] = valueOf(nutrients[0]).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
@@ -306,23 +293,22 @@ public class RationFragment extends TemplateFragment implements ContractRational
             @Override
             public void onSetWeightComponent() {
                 setValueRation();
-                presenter.onSuggestionClick(adapter.getRation());
+                presenter.onUpdateRation(adapter.getRation());
             }
 
             @Override
             public void onClickBtnDelete() {
                 setValueRation();
-                presenter.onSuggestionClick(adapter.getRation());
+                presenter.onUpdateRation(adapter.getRation());
             }
 
             @Override
             public void onClickBtnEdit() {
                 menuItemSvComponent.collapseActionView();
-                Log.d(TAG, "onClickBtnEdit: " + adapter.getRation().getComposition().get(adapter.getEditPosition()).getName());
-                Product product = adapter.getRation().getComposition().get(adapter.getEditPosition());
 
-                /*Dish dish = (Dish) adapter.getRation().getComposition().get(adapter.getEditPosition());
-                editDish(dish);*/
+                Dish dish = adapter.getRation().getComposition()
+                        .get(adapter.getEditDish());
+                editDish(dish);
             }
 
             @Override
@@ -341,12 +327,23 @@ public class RationFragment extends TemplateFragment implements ContractRational
             @Override
             public void onUpdateRation() {
                 adapter.getRation().getComposition().set(adapter.getRation().getComposition().indexOf(dish), dish);
-                presenter.onSuggestionClick(adapter.getRation());
+                presenter.onUpdateRation(adapter.getRation());
+                fm.beginTransaction()
+                        .replace(R.id.fragment, thisFragment)
+                        .commit();
             }
         });
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment, fragment)
                 .commit();
+    }
+
+    @Override
+    public void addDish(Dish dish) {
+        // Добавляем продукт в рацион.
+        adapter.getRation().addDish(dish);
+        // Прокручивает RecyclerView до добавленного компонента.
+        recyclerView.smoothScrollToPosition(adapter.getComponents().size() - 1);
     }
 
     private void setValueRation() {

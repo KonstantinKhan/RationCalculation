@@ -2,6 +2,7 @@ package com.khan366kos.rationcalculation.getway;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
@@ -310,7 +311,6 @@ public class DataProvider {
     }
 
     private List<Product> callQueryDishes(String s, List<Product> items) {
-        Log.d(TAG, "callQueryDishes: " + s);
         productDbHelper.setDb();
 
         List<Product> queryProduct = new ArrayList<>();
@@ -421,6 +421,15 @@ public class DataProvider {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (CursorIndexOutOfBoundsException e) {
+            Product product = callGetProduct(name);
+
+            dish = new Dish(product.getName(), product.getCaloriesDefault(),
+                    product.getProteinsDefault(), product.getFatsDefault(),
+                    product.getCarbohydratesDefault());
+            Log.d(TAG, "callGetDish: " + dish.getCaloriesPortion() + " " + dish.getProteinsPortion());
+            dish.setWeight(100);
+            dish.setWeightCooked(100);
         }
         cursor.close();
 

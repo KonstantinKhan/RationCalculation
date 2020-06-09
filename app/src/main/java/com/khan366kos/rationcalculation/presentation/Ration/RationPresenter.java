@@ -1,8 +1,5 @@
 package com.khan366kos.rationcalculation.presentation.Ration;
 
-import android.util.Log;
-
-import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.getway.DataProvider;
@@ -12,7 +9,6 @@ import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TAG;
 import static com.khan366kos.rationcalculation.presentation.Ration.ContractRational.*;
 
 public class RationPresenter implements ContractRational.RationPresenter {
@@ -62,7 +58,7 @@ public class RationPresenter implements ContractRational.RationPresenter {
     }
 
     @Override
-    public void onSuggestionClick(Ration ration) {
+    public void onUpdateRation(Ration ration) {
         dataProvider.saveRation(ration)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe();
@@ -79,5 +75,15 @@ public class RationPresenter implements ContractRational.RationPresenter {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(dish -> view.editDish(dish));
+    }
+
+    @Override
+    public void onSuggestionClick(String name) {
+        dataProvider.getDish(name)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(dish -> view.addDish(dish),
+                        throwable -> {
+                        });
     }
 }

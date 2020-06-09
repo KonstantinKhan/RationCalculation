@@ -20,9 +20,10 @@ public class Dish extends Product implements Serializable {
 
     /**
      * Конструктор для создания блюда с заданными КБЖУ
-     * @param calories - калорийность блюда.
-     * @param proteins - белки блюда.
-     * @param fats - жиры блюда.
+     *
+     * @param calories      - калорийность блюда.
+     * @param proteins      - белки блюда.
+     * @param fats          - жиры блюда.
      * @param carbohydrates - углеводы блюда
      */
     public Dish(String name, double calories, double proteins, double fats, double carbohydrates) {
@@ -69,7 +70,7 @@ public class Dish extends Product implements Serializable {
      * Метод для подсчета макронутриентов и веса блюда.
      */
     public void setNutrients() {
-        int  weightTemp = 0;
+        int weightTemp = 0;
         double caloriesTemp = 0;
         double proteinsTemp = 0;
         double fatsTemp = 0;

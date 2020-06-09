@@ -15,6 +15,8 @@ public interface ContractRational {
         void setRation(Ration ration);
 
         void editDish(Dish dish);
+
+        void addDish(Dish dish);
     }
 
     interface RationPresenter {
@@ -26,10 +28,12 @@ public interface ContractRational {
 
         void onShowRation(String date);
 
-        void onSuggestionClick(Ration ration);
+        void onUpdateRation(Ration ration);
 
         void onClickBtnDelete(String date);
 
         void onClickBtnEdit(String name);
+
+        void onSuggestionClick(String name);
     }
 }
