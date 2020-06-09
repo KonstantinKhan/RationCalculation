@@ -326,7 +326,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
         Fragment fragment = new DishFragment(dish, new DishFragment.OnUpdateRation() {
             @Override
             public void onUpdateRation() {
-                adapter.getRation().getComposition().set(adapter.getRation().getComposition().indexOf(dish), dish);
+                adapter.getRation().getComposition().set(adapter.getEditDish(), dish);
                 presenter.onUpdateRation(adapter.getRation());
                 fm.beginTransaction()
                         .replace(R.id.fragment, thisFragment)

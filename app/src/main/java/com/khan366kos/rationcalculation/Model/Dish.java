@@ -9,12 +9,15 @@ import java.util.List;
  */
 public class Dish extends Product implements Serializable {
 
+    private boolean isProduct;
+
     private List<Product> composition = new ArrayList<>();
 
     /**
      * Конструктор для создания пустого экземпляра блюда.
      */
     public Dish() {
+        isProduct = false;
         setCooked(true);
     }
 
@@ -27,6 +30,7 @@ public class Dish extends Product implements Serializable {
      * @param carbohydrates - углеводы блюда
      */
     public Dish(String name, double calories, double proteins, double fats, double carbohydrates) {
+        this.isProduct = true;
         this.setName(name);
         this.setCaloriesDefault(calories);
         this.setProteinsDefault(proteins);
@@ -106,5 +110,9 @@ public class Dish extends Product implements Serializable {
                 result = product;
         }
         return result;
+    }
+
+    public boolean isProduct() {
+        return isProduct;
     }
 }

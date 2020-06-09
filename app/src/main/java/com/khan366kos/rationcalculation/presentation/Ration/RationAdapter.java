@@ -161,6 +161,9 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         }
 
         private void bind(Dish dish) {
+            if (dish.isProduct()) {
+                btnEdit.setVisibility(View.GONE);
+            }
             tvName.setText(dish.getName());
             tvCalories.setText(String.valueOf(dish.getCaloriesPortion()).replace(".", ","));
             tvProteins.setText(String.valueOf(dish.getProteinsPortion()).replace(".", ","));

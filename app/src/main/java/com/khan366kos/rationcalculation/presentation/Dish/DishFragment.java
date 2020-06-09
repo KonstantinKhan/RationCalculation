@@ -172,8 +172,10 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
         recyclerView.setAdapter(dishAdapter);
 
         etDishWeightCooked.setText(String.valueOf(dishAdapter.getDish().getWeightCooked()));
-        if (dishAdapter.getDish().getName().length() != 0) {
-            tvHeading.setText(dishAdapter.getDish().getName());
+        if (dishAdapter.getDish().getComposition().size() != 0) {
+            if (dishAdapter.getDish().getName().length() != 0) {
+                tvHeading.setText(dishAdapter.getDish().getName());
+            }
         }
         setValuesRaw();
         setValuesCooked();
