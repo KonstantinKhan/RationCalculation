@@ -68,6 +68,8 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         void onClickBtnEdit();
 
         void onClickItemComponent();
+
+        void onCLickWeightComponent();
     }
 
     public List<Dish> getComponents() {
@@ -114,6 +116,10 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
 
             srl.setOnClickListener(view -> {
                 onMove.onClickItemComponent();
+            });
+
+            etWeight.setOnClickListener(view -> {
+                //onMove.onCLickWeightComponent();
             });
 
             etWeight.addTextChangedListener(new TextWatcher() {

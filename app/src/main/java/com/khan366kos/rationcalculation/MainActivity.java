@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (newFragmentId == R.id.products_base) menuItemAddComponent.setVisible(true);
+
         return super.onPrepareOptionsMenu(menu);
     }
 

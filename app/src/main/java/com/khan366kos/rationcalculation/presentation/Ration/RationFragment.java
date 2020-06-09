@@ -151,6 +151,16 @@ public class RationFragment extends TemplateFragment implements ContractRational
         menuItemSvComponent = menu.findItem(R.id.mi_sv_component);
         svComponent = (SearchView) menuItemSvComponent.getActionView();
 
+        // Закрываем SearchView, если у него пропадает фокус.
+        svComponent.setOnQueryTextFocusChangeListener((view, b) ->
+                svComponent.post(() -> {
+                    if (!b) {
+                        if (menuItemSvComponent.isActionViewExpanded()) {
+                            menuItemSvComponent.collapseActionView();
+                        }
+                    }
+                }));
+
         // Устанавливаем вспомогательную надпись в поле поиска.
         svComponent.setQueryHint("Выберите продукт");
 
@@ -313,6 +323,13 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
             @Override
             public void onClickItemComponent() {
+            }
+
+            @Override
+            public void onCLickWeightComponent() {
+                if (svComponent.isFocused()) {
+                    menuItemSvComponent.collapseActionView();
+                }
             }
         }, ration);
         adapter.getRation().setDate(ration.getDate());
