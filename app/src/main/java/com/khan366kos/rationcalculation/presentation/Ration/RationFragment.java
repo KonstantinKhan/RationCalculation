@@ -323,6 +323,13 @@ public class RationFragment extends TemplateFragment implements ContractRational
                     menuItemSvComponent.collapseActionView();
                 }
             }
+
+            @Override
+            public void collapseMenuItemSvComponent() {
+                if (menuItemSvComponent.isActionViewExpanded()) {
+                    menuItemSvComponent.collapseActionView();
+                }
+            }
         }, ration);
         adapter.getRation().setDate(ration.getDate());
         recyclerView.setAdapter(adapter);

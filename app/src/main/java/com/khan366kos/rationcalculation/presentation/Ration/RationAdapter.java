@@ -1,11 +1,13 @@
 package com.khan366kos.rationcalculation.presentation.Ration;
 
+import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -70,6 +72,8 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
         void onClickItemComponent();
 
         void onCLickWeightComponent();
+
+        void collapseMenuItemSvComponent();
     }
 
     public List<Dish> getComponents() {
@@ -118,9 +122,19 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                 onMove.onClickItemComponent();
             });
 
-            etWeight.setOnClickListener(view -> {
-                //onMove.onCLickWeightComponent();
+            etWeight.setOnFocusChangeListener((view, b) -> {
+                if (b) {
+                    onMove.collapseMenuItemSvComponent();
+                }
             });
+
+           /* etWeight.setOnClickListener(view -> {
+                Log.d(TAG, "RationViewHolder: etWeightClick");
+                InputMethodManager imm = (InputMethodManager) view.getContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(etWeight, 0);
+                //onMove.onCLickWeightComponent();
+            });*/
 
             etWeight.addTextChangedListener(new TextWatcher() {
                 @Override
