@@ -347,9 +347,10 @@ public class RationFragment extends TemplateFragment implements ContractRational
                 fm.beginTransaction()
                         .replace(R.id.fragment, thisFragment)
                         .commit();
+                Log.d(TAG, "onUpdateRation: " + fm.getFragments());
             }
         });
-        getParentFragmentManager().beginTransaction()
+        fm.beginTransaction()
                 .replace(R.id.fragment, fragment)
                 .commit();
     }

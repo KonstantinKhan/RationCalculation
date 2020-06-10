@@ -31,6 +31,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.khan366kos.rationcalculation.MainActivity;
 import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Product;
+import com.khan366kos.rationcalculation.OnBackPressedListener;
 import com.khan366kos.rationcalculation.Service.Toast.MyToast;
 import com.khan366kos.rationcalculation.R;
 import com.khan366kos.rationcalculation.Service.AppCursorAdapter.CursorAdapterFactory;
@@ -40,7 +41,7 @@ import java.util.List;
 
 import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.*;
 
-public class DishFragment extends Fragment implements ContractDishFragment.DishView {
+public class DishFragment extends Fragment implements ContractDishFragment.DishView, OnBackPressedListener {
 
     private RecyclerView recyclerView;
     private Menu menu;
@@ -88,6 +89,11 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
         updateDish = false;
         this.dish = dish;
         this.onUpdateRation = onUpdateRation;
+    }
+
+    @Override
+    public void onBackPressed() {
+        onUpdateRation.onUpdateRation();
     }
 
     public interface OnUpdateRation {

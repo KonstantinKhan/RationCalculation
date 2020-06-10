@@ -17,6 +17,8 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -112,10 +114,9 @@ public class MainActivity extends AppCompatActivity {
             public void onDrawerClosed(@NonNull View drawerView) {
                 if (newFragmentId != 0) {
                     if (newFragmentId != oldFragmentId) {
-                        Log.d(TAG, "onDrawerClosed: Не равны");
                         navController.navigate(newFragmentId, null, navOptions);
                         oldFragmentId = newFragmentId;
-                    } else Log.d(TAG, "onDrawerClosed: равны");
+                    }
                 }
             }
 
@@ -133,10 +134,26 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager().getFragments().get(0).getChildFragmentManager();
+        OnBackPressedListener onBackPressedListener = null;
+
+        for (Fragment fragment : fm.getFragments()) {
+            if (fragment instanceof OnBackPressedListener) {
+                onBackPressedListener = (OnBackPressedListener) fragment;
+                break;
+            }
+        }
+
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else if (etDishName.hasFocus()) {
             etDishName.clearFocus();
+        } else if (onBackPressedListener != null) {
+            try {
+                onBackPressedListener.onBackPressed();
+            } catch (NullPointerException e) {
+                super.onBackPressed();
+            }
         } else {
             oldFragmentId = 0;
             super.onBackPressed();

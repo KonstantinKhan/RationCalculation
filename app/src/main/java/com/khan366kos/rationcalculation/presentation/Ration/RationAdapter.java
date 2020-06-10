@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
+import com.khan366kos.rationcalculation.MainActivity;
 import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
@@ -128,14 +129,6 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
                 }
             });
 
-           /* etWeight.setOnClickListener(view -> {
-                Log.d(TAG, "RationViewHolder: etWeightClick");
-                InputMethodManager imm = (InputMethodManager) view.getContext()
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(etWeight, 0);
-                //onMove.onCLickWeightComponent();
-            });*/
-
             etWeight.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -176,6 +169,7 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
             btnEdit.setOnClickListener(view -> {
                 name = dish.getName();
                 editDish = position;
+                MainActivity.newFragmentId = R.id.dish;
                 onMove.onClickBtnEdit();
             });
         }
