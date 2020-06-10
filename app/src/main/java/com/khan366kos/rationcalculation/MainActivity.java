@@ -2,6 +2,7 @@ package com.khan366kos.rationcalculation;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.*;
+
 import com.google.android.material.navigation.NavigationView;
 
 import java.text.SimpleDateFormat;
@@ -38,13 +41,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvHeading;
     private EditText etDishName;
 
-    private MenuItem menuItemAddComponent;
     private MenuItem menuItemSvComponent;
 
     private SearchView svComponent;
 
     public static int newFragmentId;
     private int oldFragmentId;
+
+    private NavOptions navOptions;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        NavOptions navOptions = new NavOptions.Builder()
+        navOptions = new NavOptions.Builder()
                 .setEnterAnim(R.anim.slide_in_right)
                 .build();
 
@@ -108,9 +112,10 @@ public class MainActivity extends AppCompatActivity {
             public void onDrawerClosed(@NonNull View drawerView) {
                 if (newFragmentId != 0) {
                     if (newFragmentId != oldFragmentId) {
+                        Log.d(TAG, "onDrawerClosed: Не равны");
                         navController.navigate(newFragmentId, null, navOptions);
                         oldFragmentId = newFragmentId;
-                    }
+                    } else Log.d(TAG, "onDrawerClosed: равны");
                 }
             }
 
@@ -123,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.tollbar_menu_ration, menu);
-        menuItemAddComponent = menu.findItem(R.id.add_component);
         return true;
     }
 
@@ -133,12 +137,14 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else if (etDishName.hasFocus()) {
             etDishName.clearFocus();
-        } else super.onBackPressed();
+        } else {
+            oldFragmentId = 0;
+            super.onBackPressed();
+        }
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (newFragmentId == R.id.products_base) menuItemAddComponent.setVisible(true);
 
         menuItemSvComponent = menu.findItem(R.id.mi_sv_component);
         svComponent = (SearchView) menuItemSvComponent.getActionView();

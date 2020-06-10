@@ -81,7 +81,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         presenter = new RationPresenter(this);
-        presenter.onShowRation(currentDate());
+
     }
 
     @Nullable
@@ -96,6 +96,8 @@ public class RationFragment extends TemplateFragment implements ContractRational
     @Override
     public void onResume() {
         super.onResume();
+
+        presenter.onShowRation(currentDate());
         tvHeading.setText(currentDate());
 
         tvHeading.setOnClickListener(view -> {

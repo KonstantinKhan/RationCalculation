@@ -3,6 +3,7 @@ package com.khan366kos.rationcalculation.presentation.ProductsBase;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ public class BaseProductsFragment extends Fragment implements ProductsView {
     private BaseProductsAdapter adapter;
     private DialogFragmentAddProduct df;
     private FragmentManager fm;
+
+    private MenuItem menuItemAddComponent;
 
     public BaseProductsFragment() {
     }
@@ -114,12 +117,25 @@ public class BaseProductsFragment extends Fragment implements ProductsView {
     }
 
     @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        menuItemAddComponent = menu.findItem(R.id.add_component);
+        menuItemAddComponent.setVisible(true);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.add_component) {
             df.setCreate(true);
             df.show(fm, "dialog add product");
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        menuItemAddComponent.setVisible(false);
     }
 
     @Override
