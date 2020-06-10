@@ -28,6 +28,7 @@ import androidx.navigation.ui.NavigationUI;
 import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.*;
 
 import com.google.android.material.navigation.NavigationView;
+import com.khan366kos.rationcalculation.presentation.Dish.DishFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         OnBackPressedListener onBackPressedListener = null;
 
         for (Fragment fragment : fm.getFragments()) {
-            if (fragment instanceof OnBackPressedListener) {
+            if (fragment instanceof DishFragment) {
                 onBackPressedListener = (OnBackPressedListener) fragment;
                 break;
             }
