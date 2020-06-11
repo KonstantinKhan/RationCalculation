@@ -12,5 +12,7 @@ public interface ContractBaseDishes {
 
     interface BaseDishesPresenter {
         void onBindViewHolder();
+
+        void onClickBtnDeleteDish(String name);
     }
 }

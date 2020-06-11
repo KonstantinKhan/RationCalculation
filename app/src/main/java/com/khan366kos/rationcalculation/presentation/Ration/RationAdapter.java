@@ -1,13 +1,11 @@
 package com.khan366kos.rationcalculation.presentation.Ration;
 
-import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -16,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
-import com.khan366kos.rationcalculation.MainActivity;
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.khan366kos.rationcalculation.Model.Dish;
 import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.R;
@@ -119,8 +117,24 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
             btnEdit = itemView.findViewById(R.id.btn_edit_component);
             srl = itemView.findViewById(R.id.srl_item_component);
 
-            srl.setOnClickListener(view -> {
-                onMove.onClickItemComponent();
+            srl.setSwipeListener(new SwipeRevealLayout.SwipeListener() {
+                @Override
+                public void onClosed(SwipeRevealLayout view) {
+
+                }
+
+                @Override
+                public void onOpened(SwipeRevealLayout view) {
+
+                }
+
+                @Override
+                public void onSlide(SwipeRevealLayout view, float slideOffset) {
+                    onMove.onClickItemComponent();
+                    if (dish.isProduct())
+                        btnEdit.setVisibility(View.GONE);
+                    else btnEdit.setVisibility(View.VISIBLE);
+                }
             });
 
             etWeight.setOnFocusChangeListener((view, b) -> {
@@ -169,15 +183,13 @@ public class RationAdapter extends RecyclerView.Adapter<RationAdapter.RationView
             btnEdit.setOnClickListener(view -> {
                 name = dish.getName();
                 editDish = position;
-                MainActivity.newFragmentId = R.id.dish;
+                //MainActivity.newFragmentId = R.id.dish; // вызывается для возможности
+                // редактирования названия блюда.
                 onMove.onClickBtnEdit();
             });
         }
 
         private void bind(Dish dish) {
-            if (dish.isProduct()) {
-                btnEdit.setVisibility(View.GONE);
-            }
             tvName.setText(dish.getName());
             tvCalories.setText(String.valueOf(dish.getCaloriesPortion()).replace(".", ","));
             tvProteins.setText(String.valueOf(dish.getProteinsPortion()).replace(".", ","));

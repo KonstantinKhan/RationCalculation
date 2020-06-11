@@ -112,6 +112,20 @@ public class DataProvider {
         return Observable.fromCallable(() -> callGetDish(name));
     }
 
+    public Observable<Void> deleteDish(String name) {
+        return Observable.fromCallable(() -> {
+            callDeleteDish(name);
+            return null;
+        });
+    }
+
+    public Observable<Void> updateDish(Dish dish) {
+        return Observable.fromCallable(() -> {
+            callUpdateDish(dish);
+            return null;
+        });
+    }
+
     private void callAddProduct(String productName, String productCalories, String productProteins,
                                 String productFats, String productCarbohydrates) {
 
@@ -333,10 +347,8 @@ public class DataProvider {
                     arrayInputStream = new ByteArrayInputStream(cursor.getBlob(cursor.getColumnIndex(COLUMN_DISH_BLOB)));
                     objectInputStream = new ObjectInputStream(arrayInputStream);
                     dish = (Dish) objectInputStream.readObject();
-                    Log.d(TAG, "callQueryDishes: " + dish.getName());
                     queryProduct.add(dish);
                 } catch (IOException e) {
-                    Log.d(TAG, "callQueryDishes: IOException " + e);
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -427,12 +439,21 @@ public class DataProvider {
             dish = new Dish(product.getName(), product.getCaloriesDefault(),
                     product.getProteinsDefault(), product.getFatsDefault(),
                     product.getCarbohydratesDefault());
-            Log.d(TAG, "callGetDish: " + dish.getCaloriesPortion() + " " + dish.getProteinsPortion());
             dish.setWeight(100);
             dish.setWeightCooked(100);
         }
         cursor.close();
 
         return dish;
+    }
+
+    private void callDeleteDish(String name) {
+        productDbHelper.setDb();
+        productDbHelper.deleteDish(name);
+    }
+
+    private void callUpdateDish(Dish dish) {
+        productDbHelper.setDb();
+        productDbHelper.updateDish(dish);
     }
 }

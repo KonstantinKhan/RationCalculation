@@ -23,4 +23,11 @@ public class BaseDishesPresenter implements ContractBaseDishes.BaseDishesPresent
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(dishes -> baseDishesView.showDishes(dishes));
     }
+
+    @Override
+    public void onClickBtnDeleteDish(String name) {
+        dataProvider.deleteDish(name)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe();
+    }
 }

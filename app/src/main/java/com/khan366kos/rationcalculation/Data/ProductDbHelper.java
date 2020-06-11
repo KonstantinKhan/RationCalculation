@@ -180,6 +180,10 @@ public class ProductDbHelper extends SQLiteOpenHelper {
         db.delete(TABLE_PRODUCTS, COLUMN_PRODUCT_NAME + " = '" + name + "'", null);
     }
 
+    public void deleteDish(String name) {
+        db.delete(TABLE_DISHES, COLUMN_DISH_NAME + " = '" + name + "'", null);
+    }
+
     public void updateRation(Ration ration) {
         setDb();
         ByteArrayOutputStream byteArrayOutputStream =
@@ -198,6 +202,34 @@ public class ProductDbHelper extends SQLiteOpenHelper {
                     cv,
                     COLUMN_RATION_DATE + " = ?",
                     new String[]{ration.getDate()});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateDish(Dish dish) {
+        setDb();
+        ByteArrayOutputStream byteArrayOutputStream =
+                new ByteArrayOutputStream();
+        ObjectOutputStream outputStream;
+        try {
+            outputStream = new ObjectOutputStream(byteArrayOutputStream);
+            outputStream.writeObject(dish);
+            outputStream.close();
+            ContentValues cv = new ContentValues();
+
+            cv.put(ProductEntry.COLUMN_DISH_BLOB, byteArrayOutputStream.toByteArray());
+            cv.put(ProductEntry.COLUMN_DISH_NAME, dish.getName());
+            cv.put(ProductEntry.COLUMN_DISH_CALORIES, dish.getCaloriesDefault());
+            cv.put(ProductEntry.COLUMN_DISH_PROTEINS, dish.getProteinsDefault());
+            cv.put(ProductEntry.COLUMN_DISH_FATS, dish.getFatsDefault());
+            cv.put(ProductEntry.COLUMN_DISH_CARBOHYDRATES, dish.getCarbohydratesDefault());
+
+            db.update(TABLE_DISHES,
+                    cv,
+                    COLUMN_DISH_NAME + " = ?",
+                    new String[]{dish.getName()});
+
         } catch (IOException e) {
             e.printStackTrace();
         }

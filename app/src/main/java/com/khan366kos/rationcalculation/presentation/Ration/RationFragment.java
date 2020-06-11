@@ -67,6 +67,8 @@ public class RationFragment extends TemplateFragment implements ContractRational
     private Fragment thisFragment;
     private FragmentManager fm;
 
+    private String thisDate;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -97,8 +99,13 @@ public class RationFragment extends TemplateFragment implements ContractRational
     public void onResume() {
         super.onResume();
 
-        presenter.onShowRation(currentDate());
-        tvHeading.setText(currentDate());
+        if (thisDate == null) {
+            presenter.onShowRation(currentDate());
+            tvHeading.setText(currentDate());
+        } else {
+            presenter.onShowRation(thisDate);
+            tvHeading.setText(thisDate);
+        }
 
         tvHeading.setOnClickListener(view -> {
             datePickerDialog.show();
@@ -109,9 +116,10 @@ public class RationFragment extends TemplateFragment implements ContractRational
             Locale locale = new Locale("ru", "RU");
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", locale);
             Date date = calendar.getTime();
-            String dateStr = simpleDateFormat.format(date) + "г.";
-            tvHeading.setText(dateStr);
-            presenter.onShowRation(dateStr);
+            thisDate = simpleDateFormat.format(date) + "г.";
+            Log.d(TAG, "onResume: " + thisDate);
+            tvHeading.setText(thisDate);
+            presenter.onShowRation(thisDate);
             setValueRation();
         });
 
@@ -315,6 +323,7 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
             @Override
             public void onClickItemComponent() {
+                Log.d(TAG, "onClickItemComponent: ");
             }
 
             @Override
@@ -342,14 +351,16 @@ public class RationFragment extends TemplateFragment implements ContractRational
         Fragment fragment = new DishFragment(dish, new DishFragment.OnUpdateRation() {
             @Override
             public void onUpdateRation() {
+                Log.d(TAG, "onUpdateRation: " + thisDate);
                 adapter.getRation().getComposition().set(adapter.getEditDish(), dish);
                 presenter.onUpdateRation(adapter.getRation());
                 fm.beginTransaction()
                         .replace(R.id.fragment, thisFragment)
                         .commit();
-                Log.d(TAG, "onUpdateRation: " + fm.getFragments());
+
             }
         });
+        Log.d(TAG, "editDish: " + thisDate);
         fm.beginTransaction()
                 .replace(R.id.fragment, fragment)
                 .commit();
@@ -357,6 +368,9 @@ public class RationFragment extends TemplateFragment implements ContractRational
 
     @Override
     public void addDish(Dish dish) {
+
+        Log.d(TAG, "addDish: " + dish.isProduct());
+
         // Добавляем продукт в рацион.
         adapter.getRation().addDish(dish);
         // Прокручивает RecyclerView до добавленного компонента.

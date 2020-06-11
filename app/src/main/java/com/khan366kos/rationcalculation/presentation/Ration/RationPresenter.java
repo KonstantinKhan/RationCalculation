@@ -1,5 +1,7 @@
 package com.khan366kos.rationcalculation.presentation.Ration;
 
+import android.util.Log;
+
 import com.khan366kos.rationcalculation.Model.Product;
 import com.khan366kos.rationcalculation.Model.Ration;
 import com.khan366kos.rationcalculation.getway.DataProvider;
@@ -9,6 +11,7 @@ import java.util.List;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TAG;
 import static com.khan366kos.rationcalculation.presentation.Ration.ContractRational.*;
 
 public class RationPresenter implements ContractRational.RationPresenter {
@@ -48,11 +51,11 @@ public class RationPresenter implements ContractRational.RationPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ration -> {
-                            //Log.d(TAG, "onShowRation: ok " + ration.getComposition().size());
+                            Log.d(TAG, "onShowRation: ok " + ration.getComposition().size());
                             view.setRation(ration);
                         },
                         throwable -> {
-                            //Log.d(TAG, "onShowRation: throwable");
+                            Log.d(TAG, "onShowRation: throwable");
                             view.setRation(new Ration(date));
                         });
     }

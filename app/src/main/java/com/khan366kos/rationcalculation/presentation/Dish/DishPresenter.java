@@ -34,6 +34,16 @@ public class DishPresenter implements ContractDishFragment.DishPresenter {
         dataProvider.addDish(dishView.saveDish())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aVoid -> {}, throwable -> dishView.showErrorDuplicate());
+                .subscribe(aVoid -> {
+                    dishView.setCreateDish(false);
+                }, throwable -> dishView.showErrorDuplicate());
+    }
+
+    @Override
+    public void onUpdateDish(Dish dish) {
+        dataProvider.updateDish(dish)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(aVoid -> {},
+                        throwable -> dishView.showErrorDuplicate());
     }
 }

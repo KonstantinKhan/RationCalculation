@@ -6,7 +6,6 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -76,28 +75,49 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
     private CursorAdapterFactory cursorAdapterFactory;
 
     private Dish dish;
-    private boolean updateDish;
+    private boolean createDish;
 
     private OnUpdateRation onUpdateRation;
+    private OnUpdateBaseDishes onUpdateBaseDishes;
+    private boolean updateDish;
+
+    private String dishName;
 
     public DishFragment() {
         dish = new Dish();
+        createDish = true;
+        updateDish = false;
+    }
+
+    public DishFragment(Dish dish, OnUpdateBaseDishes onUpdateBaseDishes) {
+        this.dish = dish;
+        dishName = dish.getName();
+        createDish = false;
         updateDish = true;
+        this.onUpdateBaseDishes = onUpdateBaseDishes;
     }
 
     public DishFragment(Dish dish, OnUpdateRation onUpdateRation) {
-        updateDish = false;
+        createDish = false;
         this.dish = dish;
+        dishName = dish.getName();
         this.onUpdateRation = onUpdateRation;
     }
 
     @Override
     public void onBackPressed() {
-        onUpdateRation.onUpdateRation();
+        if (onUpdateRation != null)
+            onUpdateRation.onUpdateRation();
+        if (onUpdateBaseDishes != null)
+            onUpdateBaseDishes.onUpdateBaseDishes();
     }
 
     public interface OnUpdateRation {
         void onUpdateRation();
+    }
+
+    public interface OnUpdateBaseDishes {
+        void onUpdateBaseDishes();
     }
 
     @Nullable
@@ -257,11 +277,17 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
                         etDishWeightCooked.selectAll();
                         return true;
                     } else {
-                        if (updateDish) {
+                        if (createDish) {
                             presenter.onSaveDish();
-                        } else {
-                            onUpdateRation.onUpdateRation();
-                        }
+                        } else if (updateDish) {
+                            if (!dishName.equals(dish.getName())) {
+                                showErrorDuplicate();
+                            } else {
+                                presenter.onUpdateDish(dishAdapter.getDish());
+                                if (onUpdateBaseDishes != null)
+                                    onUpdateBaseDishes.onUpdateBaseDishes();
+                            }
+                        } else onUpdateRation.onUpdateRation();
                         return true;
                     }
             }
@@ -503,6 +529,12 @@ public class DishFragment extends Fragment implements ContractDishFragment.DishV
     @Override
     public void showErrorDuplicate() {
         MyToast.showToast(this.getContext(), getString(R.string.error_duplicate_dish));
+    }
+
+    @Override
+    public void setCreateDish(boolean b) {
+        createDish = b;
+        updateDish = true;
     }
 
     // Метод для получения курсора.

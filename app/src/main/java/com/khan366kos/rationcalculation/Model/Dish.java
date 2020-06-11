@@ -1,8 +1,12 @@
 package com.khan366kos.rationcalculation.Model;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.khan366kos.rationcalculation.Data.ProductContract.ProductEntry.TAG;
 
 /**
  * Класс, описывающий блюдо.

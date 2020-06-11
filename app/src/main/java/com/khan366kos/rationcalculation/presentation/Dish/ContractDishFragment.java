@@ -13,6 +13,8 @@ public interface ContractDishFragment {
         Dish saveDish();
 
         void showErrorDuplicate();
+
+        void setCreateDish(boolean b);
     }
 
     interface DishPresenter {
@@ -20,5 +22,7 @@ public interface ContractDishFragment {
         void onQueryTextChange(String s, List<Product> itemCount);
 
         void onSaveDish();
+
+        void onUpdateDish(Dish dish);
     }
 }
