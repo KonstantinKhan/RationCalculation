@@ -1,0 +1,18 @@
+<vector android:alpha="0.25" android:autoMirrored="true"
+    android:height="508dp" android:viewportHeight="508"
+    android:viewportWidth="508" android:width="508dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#FF000000" android:pathData="M303.2,0H41C18.4,0 0,18.4 0,41v426c0,22.6 18.4,41 41,41h262.2c22.6,0 41,-18.4 41,-41V41C344.1,18.4 325.7,0 303.2,0zM327.8,467h-0.1c0,13.6 -11,24.6 -24.6,24.6H41c-13.6,0 -24.6,-11 -24.6,-24.6V41c0,-13.6 11,-24.6 24.6,-24.6h262.2c13.6,0 24.6,11 24.6,24.6V467z"/>
+    <path android:fillColor="#FF000000" android:pathData="M41,196.7v65.5h65.5v-65.5H41zM90.2,245.8H57.4V213h32.8V245.8z"/>
+    <path android:fillColor="#FF000000" android:pathData="M237.6,196.7v65.5h65.5v-65.5H237.6zM286.8,245.8H254V213h32.8V245.8z"/>
+    <path android:fillColor="#FF000000" android:pathData="M139.3,196.7v65.5h65.5v-65.5H139.3zM188.5,245.8h-32.8V213h32.8V245.8z"/>
+    <path android:fillColor="#FF000000" android:pathData="M41,295v65.5h65.5V295H41zM90.2,344.2H57.4v-32.8h32.8V344.2z"/>
+    <path android:fillColor="#FF000000" android:pathData="M237.6,295v163.8h65.5V295H237.6zM286.8,442.5H254V311.4h32.8V442.5z"/>
+    <path android:fillColor="#FF000000" android:pathData="M139.3,295v65.5h65.5V295H139.3zM188.5,344.2h-32.8v-32.8h32.8V344.2z"/>
+    <path android:fillColor="#FF000000" android:pathData="M41,393.3v65.5h65.5v-65.5H41zM90.2,442.5H57.4v-32.8h32.8V442.5z"/>
+    <path android:fillColor="#FF000000" android:pathData="M139.3,393.3v65.5h65.5v-65.5H139.3zM188.5,442.5h-32.8v-32.8h32.8V442.5z"/>
+    <path android:fillColor="#FF000000" android:pathData="M41,49.2v114.7h262.2V49.2H41zM286.8,147.4H57.4V65.5h229.4V147.4z"/>
+    <path android:fillColor="#FF000000" android:pathData="M163.9,98.3h16.4v16.4h-16.4z"/>
+    <path android:fillColor="#FF000000" android:pathData="M196.6,98.3h16.4v16.4h-16.4z"/>
+    <path android:fillColor="#FF000000" android:pathData="M131.1,98.3h16.4v16.4h-16.4z"/>
+    <path android:fillColor="#FF000000" android:pathData="M450.6,0c-31.6,0 -57.4,25.7 -57.4,57.4v16.4h-32.8v131.1h16.4V90.1h16.4v355.7l57.4,57.4l57.4,-57.4V57.4C508,25.7 482.3,0 450.6,0zM450.6,480l-29.4,-29.4H480L450.6,480zM491.6,434.3h-81.9v-49.2h81.9V434.3zM491.6,368.7h-81.9V90.1h81.9V368.7zM491.7,73.7h-0.1h-81.9V57.4c0,-22.6 18.4,-41 41,-41c22.6,0 41,18.4 41,41V73.7z"/>
+</vector>
