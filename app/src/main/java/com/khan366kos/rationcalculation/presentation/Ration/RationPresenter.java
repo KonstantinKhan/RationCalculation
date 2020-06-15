@@ -51,19 +51,18 @@ public class RationPresenter implements ContractRational.RationPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ration -> {
-                            Log.d(TAG, "onShowRation: ok " + ration.getComposition().size());
+                            //Log.d(TAG, "onShowRation: ok " + ration.getComposition().size());
                             view.setRation(ration);
                         },
                         throwable -> {
-                            Log.d(TAG, "onShowRation: throwable");
-                            view.setRation(new Ration(date));
+                            //Log.d(TAG, "onShowRation: throwable");
+                            //view.setRation(new Ration(date));
                         });
     }
 
     @Override
     public void onUpdateRation(Ration ration) {
         dataProvider.saveRation(ration)
-                .subscribeOn(Schedulers.newThread())
                 .subscribe();
     }
 
