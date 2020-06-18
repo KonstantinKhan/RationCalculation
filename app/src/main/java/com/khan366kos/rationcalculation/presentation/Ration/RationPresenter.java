@@ -56,7 +56,7 @@ public class RationPresenter implements ContractRational.RationPresenter {
                         },
                         throwable -> {
                             //Log.d(TAG, "onShowRation: throwable");
-                            //view.setRation(new Ration(date));
+                            view.setRation(new Ration(date));
                         });
     }
 
